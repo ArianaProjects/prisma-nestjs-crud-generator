@@ -3,6 +3,9 @@ node_modules/
 src/practice.ts
 **/gen
 **/gen/*
+gen/
+gen/
+gen/*
 prisma/
 yarn-error.log
 gen
