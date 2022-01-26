@@ -1,0 +1,53 @@
+{
+	"name": "prisma-code-generator",
+	"version": "0.1.11",
+	"description": "code generator from Prisma schema",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"keywords": [
+		"prisma",
+		"nestjs",
+		"typescript",
+		"generator"
+	],
+	"scripts": {
+		"format": "prettier --write \"src/**/*.ts\"",
+		"dev": "node -r ts-node/register src/index.ts",
+		"start": "node dist/bin.js",
+		"build": "npx tsc",
+		"prepack": "yarn build",
+		"test": "jest"
+	},
+	"bin": {
+		"prisma-code-generator": "dist/bin.js"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"author": {
+		"name": "shayan",
+		"email": "shayandavarifard@yahoo.com"
+	},
+	"dependencies": {
+		"@prisma/client": "^3.8.1",
+		"@prisma/generator-helper": "^3.8.1",
+		"@prisma/sdk": "^3.8.1",
+		"change-case": "^4.1.2",
+		"json-schema": "^0.4.0",
+		"prettier": "2.5.1"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.4.0",
+		"@types/json-schema": "^7.0.9",
+		"@types/node": "^16.6.2",
+		"@types/prettier": "2.4.3",
+		"jest": "^27.4.7",
+		"prisma": "^3.8.1",
+		"swagger-ui-express": "^4.1.6",
+		"ts-node": "^10.2.1",
+		"typescript": "^4.3.5"
+	},
+	"_moduleAliases": {
+		"..": "dist"
+	}
+}
