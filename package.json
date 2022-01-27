@@ -13,9 +13,9 @@
 	],
 	"scripts": {
 		"format": "prettier --write \"src/**/*.ts\"",
-		"dev": "node -r ts-node/register src/index.ts",
+		"dev": "rm -rf ./gen && node -r ts-node/register src/index.ts",
 		"start": "node dist/bin.js",
-		"build": "npx tsc",
+		"build": "rm -rf ./dist && rm -rf ./gen && npx tsc",
 		"prepack": "yarn build",
 		"release": "release-it",
 		"test": "jest"
