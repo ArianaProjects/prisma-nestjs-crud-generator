@@ -82,22 +82,15 @@ export default class DTO extends FileGeneral {
       })
       .join('\n');
     const bodyFind = `
-
-
     ${bodyConnect}
-    ${uniqF}`;
+    ${uniqF}
+    `;
     const findClass = classGenerator(`Find${this.toPascalCase(this.model.name)}Dto`, bodyFind);
     this.fileContent = prettierFormat(`
-
     ${importImported}
-
-    
     ${connectClass}
-
     ${createClass}
-    
     ${updateClass}
-    
     ${findClass}
     `);
   }

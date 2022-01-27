@@ -19,7 +19,8 @@ export function fieldGenerator(f: DMMF.Field) {
 }
 
 export function fieldGeneratorNull(f: DMMF.Field) {
-  const t = f.isRequired ? tsTypes(f.type) : tsTypes(f.type) + ' | null';
+  const t = (f.isRequired ? tsTypes(f.type) : tsTypes(f.type) + ' | null') + (f.isList ? '[]' : '');
   const n = f.isRequired && f.kind != 'object' ? f.name : f.name + '?';
+
   return fieldGeneratorGeneral(n, t);
 }
