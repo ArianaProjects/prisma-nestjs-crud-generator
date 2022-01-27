@@ -94,7 +94,7 @@ export default class Service extends FileGeneral {
           })}
         },
       });
-      return ret.lenth > 0
+      return ret.length > 0
 
 `,
     );
@@ -233,7 +233,7 @@ export default class Service extends FileGeneral {
     let createManyBody: string[] = [];
     let createManyServiceParam: string[] = [];
     if (!!this.parent.createManyParamBody) {
-      createManyServiceParam.push('body:' + this.parent.createManyParamBody);
+      createManyServiceParam.push('body:' + this.parent.createManyParamBody + '[]');
     }
     if (!!this.parent.createManyParamParam) {
       createManyServiceParam.push('param:' + this.parent.createManyParamParam);

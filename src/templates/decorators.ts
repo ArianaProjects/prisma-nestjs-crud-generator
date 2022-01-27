@@ -1,6 +1,6 @@
 export function ModuleDecoratorGenerator(IMPORTS: string, PROVIDERS: string, CONTROLLERS: string, EXPORTS: string) {
   return `@Module({
-        import: [
+        imports: [
             ${IMPORTS}
         ],
         providers: [

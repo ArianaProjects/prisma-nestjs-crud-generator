@@ -4,7 +4,7 @@
 	"description": "code generator from Prisma schema",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"private": "false",
+	"repository": "https://github.com/ariana-germany/prisma-code-generator",
 	"keywords": [
 		"prisma",
 		"nestjs",

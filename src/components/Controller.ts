@@ -117,7 +117,7 @@ export default class Controller extends FileGeneral {
       existServiceParam.push('body');
     }
     if (!!this.parent.existParamParam) {
-      existDecorator.push(`@ApiParam({type:[${this.parent.existParamParam}]})`);
+      // existDecorator.push(`@ApiParam({type:[${this.parent.existParamParam}]})`);
       existParam.push(`@Param() param:${this.parent.existParamParam}`);
       existServiceParam.push('param');
     }
@@ -158,7 +158,7 @@ export default class Controller extends FileGeneral {
       findUniqServiceParam.push('body');
     }
     if (!!this.parent.findUniqParamParam) {
-      findUniqDecorator.push(`@ApiParam({type:[${this.parent.findUniqParamParam}]})`);
+      // findUniqDecorator.push(`@ApiParam({type:[${this.parent.findUniqParamParam}]})`);
       findUniqParam.push(`@Param() param:${this.parent.findUniqParamParam}`);
       findUniqServiceParam.push('param');
     }
@@ -199,7 +199,7 @@ export default class Controller extends FileGeneral {
       findManyServiceParam.push('body');
     }
     if (!!this.parent.findManyParamParam) {
-      findManyDecorator.push(`@ApiParam({type:[${this.parent.findManyParamParam}]})`);
+      // findManyDecorator.push(`@ApiParam({type:[${this.parent.findManyParamParam}]})`);
       findManyParam.push(`@Param() param:${this.parent.findManyParamParam}`);
       findManyServiceParam.push('param');
     }
@@ -240,7 +240,7 @@ export default class Controller extends FileGeneral {
       getAllServiceParam.push('body');
     }
     if (!!this.parent.getAllParamParam) {
-      getAllDecorator.push(`@ApiParam({type:[${this.parent.getAllParamParam}]})`);
+      // getAllDecorator.push(`@ApiParam({type:[${this.parent.getAllParamParam}]})`);
       getAllParam.push(`@Param() param:${this.parent.getAllParamParam}`);
       getAllServiceParam.push('param');
     }
@@ -281,7 +281,7 @@ export default class Controller extends FileGeneral {
       createOneServiceParam.push('body');
     }
     if (!!this.parent.createOneParamParam) {
-      createOneDecorator.push(`@ApiParam({type:[${this.parent.createOneParamParam}]})`);
+      // createOneDecorator.push(`@ApiParam({type:[${this.parent.createOneParamParam}]})`);
       createOneParam.push(`@Param() param:${this.parent.createOneParamParam}`);
       createOneServiceParam.push('param');
     }
@@ -322,7 +322,7 @@ export default class Controller extends FileGeneral {
       createManyServiceParam.push('body');
     }
     if (!!this.parent.createManyParamParam) {
-      createManyDecorator.push(`@ApiParam({type:[${this.parent.createManyParamParam}]})`);
+      // createManyDecorator.push(`@ApiParam({type:[${this.parent.createManyParamParam}]})`);
       createManyParam.push(`@Param() param:${this.parent.createManyParamParam}`);
       createManyServiceParam.push('param');
     }
@@ -363,7 +363,7 @@ export default class Controller extends FileGeneral {
       updateOneServiceParam.push('body');
     }
     if (!!this.parent.updateOneParamParam) {
-      updateOneDecorator.push(`@ApiParam({type:[${this.parent.updateOneParamParam}]})`);
+      // updateOneDecorator.push(`@ApiParam({type:[${this.parent.updateOneParamParam}]})`);
       updateOneParam.push(`@Param() param:${this.parent.updateOneParamParam}`);
       updateOneServiceParam.push('param');
     }
@@ -404,7 +404,7 @@ export default class Controller extends FileGeneral {
       updateManyServiceParam.push('body');
     }
     if (!!this.parent.updateManyParamParam) {
-      updateManyDecorator.push(`@ApiParam({type:[${this.parent.updateManyParamParam}]})`);
+      // updateManyDecorator.push(`@ApiParam({type:[${this.parent.updateManyParamParam}]})`);
       updateManyParam.push(`@Param() param:${this.parent.updateManyParamParam}`);
       updateManyServiceParam.push('param');
     }
@@ -445,7 +445,7 @@ export default class Controller extends FileGeneral {
       updateAllServiceParam.push('body');
     }
     if (!!this.parent.updateAllParamParam) {
-      updateAllDecorator.push(`@ApiParam({type:[${this.parent.updateAllParamParam}]})`);
+      // updateAllDecorator.push(`@ApiParam({type:[${this.parent.updateAllParamParam}]})`);
       updateAllParam.push(`@Param() param:${this.parent.updateAllParamParam}`);
       updateAllServiceParam.push('param');
     }
@@ -486,7 +486,7 @@ export default class Controller extends FileGeneral {
       updateAdminOneServiceParam.push('body');
     }
     if (!!this.parent.updateAdminOneParamParam) {
-      updateAdminOneDecorator.push(`@ApiParam({type:[${this.parent.updateAdminOneParamParam}]})`);
+      // updateAdminOneDecorator.push(`@ApiParam({type:[${this.parent.updateAdminOneParamParam}]})`);
       updateAdminOneParam.push(`@Param() param:${this.parent.updateAdminOneParamParam}`);
       updateAdminOneServiceParam.push('param');
     }
@@ -527,7 +527,7 @@ export default class Controller extends FileGeneral {
       updateAdminManyServiceParam.push('body');
     }
     if (!!this.parent.updateAdminManyParamParam) {
-      updateAdminManyDecorator.push(`@ApiParam({type:[${this.parent.updateAdminManyParamParam}]})`);
+      // updateAdminManyDecorator.push(`@ApiParam({type:[${this.parent.updateAdminManyParamParam}]})`);
       updateAdminManyParam.push(`@Param() param:${this.parent.updateAdminManyParamParam}`);
       updateAdminManyServiceParam.push('param');
     }
@@ -568,7 +568,7 @@ export default class Controller extends FileGeneral {
       updateAdminAllServiceParam.push('body');
     }
     if (!!this.parent.updateAdminAllParamParam) {
-      updateAdminAllDecorator.push(`@ApiParam({type:[${this.parent.updateAdminAllParamParam}]})`);
+      // updateAdminAllDecorator.push(`@ApiParam({type:[${this.parent.updateAdminAllParamParam}]})`);
       updateAdminAllParam.push(`@Param() param:${this.parent.updateAdminAllParamParam}`);
       updateAdminAllServiceParam.push('param');
     }
@@ -609,7 +609,7 @@ export default class Controller extends FileGeneral {
       deleteOneServiceParam.push('body');
     }
     if (!!this.parent.deleteOneParamParam) {
-      deleteOneDecorator.push(`@ApiParam({type:[${this.parent.deleteOneParamParam}]})`);
+      // deleteOneDecorator.push(`@ApiParam({type:[${this.parent.deleteOneParamParam}]})`);
       deleteOneParam.push(`@Param() param:${this.parent.deleteOneParamParam}`);
       deleteOneServiceParam.push('param');
     }
@@ -650,7 +650,7 @@ export default class Controller extends FileGeneral {
       deleteManyServiceParam.push('body');
     }
     if (!!this.parent.deleteManyParamParam) {
-      deleteManyDecorator.push(`@ApiParam({type:[${this.parent.deleteManyParamParam}]})`);
+      // deleteManyDecorator.push(`@ApiParam({type:[${this.parent.deleteManyParamParam}]})`);
       deleteManyParam.push(`@Param() param:${this.parent.deleteManyParamParam}`);
       deleteManyServiceParam.push('param');
     }
@@ -691,7 +691,7 @@ export default class Controller extends FileGeneral {
       deleteAllServiceParam.push('body');
     }
     if (!!this.parent.deleteAllParamParam) {
-      deleteAllDecorator.push(`@ApiParam({type:[${this.parent.deleteAllParamParam}]})`);
+      // deleteAllDecorator.push(`@ApiParam({type:[${this.parent.deleteAllParamParam}]})`);
       deleteAllParam.push(`@Param() param:${this.parent.deleteAllParamParam}`);
       deleteAllServiceParam.push('param');
     }
@@ -732,7 +732,7 @@ export default class Controller extends FileGeneral {
       deleteAdminOneServiceParam.push('body');
     }
     if (!!this.parent.deleteAdminOneParamParam) {
-      deleteAdminOneDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminOneParamParam}]})`);
+      // deleteAdminOneDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminOneParamParam}]})`);
       deleteAdminOneParam.push(`@Param() param:${this.parent.deleteAdminOneParamParam}`);
       deleteAdminOneServiceParam.push('param');
     }
@@ -773,7 +773,7 @@ export default class Controller extends FileGeneral {
       deleteAdminManyServiceParam.push('body');
     }
     if (!!this.parent.deleteAdminManyParamParam) {
-      deleteAdminManyDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminManyParamParam}]})`);
+      // deleteAdminManyDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminManyParamParam}]})`);
       deleteAdminManyParam.push(`@Param() param:${this.parent.deleteAdminManyParamParam}`);
       deleteAdminManyServiceParam.push('param');
     }
@@ -814,7 +814,7 @@ export default class Controller extends FileGeneral {
       deleteAdminAllServiceParam.push('body');
     }
     if (!!this.parent.deleteAdminAllParamParam) {
-      deleteAdminAllDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminAllParamParam}]})`);
+      // deleteAdminAllDecorator.push(`@ApiParam({type:[${this.parent.deleteAdminAllParamParam}]})`);
       deleteAdminAllParam.push(`@Param() param:${this.parent.deleteAdminAllParamParam}`);
       deleteAdminAllServiceParam.push('param');
     }
