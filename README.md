@@ -2,7 +2,7 @@
 
 ## **Intro**
 
-Prisma Code Generator CRUD Generator from the Prisma Schema for NestJs with most used Decorator for Entities and DTOs and controllers. This Generator generates the following files for each Model
+Prisma Code Generator CRUD Generator from the Prisma Schema for NestJs with most used Decorator for Entities and DTOs and controllers. This generator works with PostgreSQL. This Generator generates the following files for each Model.
 
 1. Module
 2. Controller
@@ -38,3 +38,9 @@ npx prisma generate
 
 [ ] Add to Package manager
 [ ] Bug Fixing
+
+# Related links
+
+Many Tanks to [Prisma](https://www.prisma.io/) with an open source database toolkit for PostgreSQL, MySQL, SQL Server, SQLite and MongoDB
+
+This repository is created with love in our team at [Ariana Germany GmbH](https://www.arianagermany.com/)
