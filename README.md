@@ -33,3 +33,8 @@ Running npx prisma generate for your Prisma Schema
 ```bash
 npx prisma generate
 ```
+
+### TODO
+
+[ ] Add to Package manager
+[ ] Bug Fixing
