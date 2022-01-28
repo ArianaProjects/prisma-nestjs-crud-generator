@@ -1,6 +1,6 @@
 # Prisma Code Generator
 
-> **WARNING**: This project is a BETA PHASE
+> **WARNING**: This project is in BETA PHASE
 
 ## **Intro**
 
