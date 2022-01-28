@@ -26,7 +26,7 @@ export default class Service extends FileGeneral {
     const fields = this.model.fields.filter((x) => !blackListFIelds(x.name) && x.kind != 'object');
     const createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
     const updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
-    let importData = ["import { PrismaService } from 'src/shared/services/prisma.service';", "import { HttpException, HttpStatus, Injectable } from '@nestjs/common';"];
+    let importData = ["import { PrismaService } from 'src/shared/services/prisma.service';", "import { HttpException, HttpStatus, Injectable } from '@nestjs/common';", "import { Prisma } from '@prisma/client';"];
     importData.push(
       `import {
         ${this.model.name}
@@ -46,7 +46,7 @@ export default class Service extends FileGeneral {
       if (f.kind == 'enum') {
         prismaImport.push(` ${f.type},`);
       } else if (f.kind == 'object') {
-        importData.push(`import {${f.type}} from "../${this.toCamelCase(f.type)}/${this.toCamelCase(f.type)}.entity"`);
+        // importData.push(`import {${f.type}} from "../${this.toCamelCase(f.type)}/${this.toCamelCase(f.type)}.entity"`);
       }
     });
     const importPrisma =
@@ -286,7 +286,7 @@ export default class Service extends FileGeneral {
 `,
     );
 
-    bodyData.push(this.serviceFunctionGenerator('createMany', createManyServiceParam.join(', '), this.model.name + '[]', createManyBody.join('\n')));
+    bodyData.push(this.serviceFunctionGenerator('createMany', createManyServiceParam.join(', '), 'Prisma.BatchPayload', createManyBody.join('\n')));
 
     // updateOne
     //CCCCCC

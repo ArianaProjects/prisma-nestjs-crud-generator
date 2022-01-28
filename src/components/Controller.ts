@@ -66,6 +66,7 @@ export default class Controller extends FileGeneral {
         ApiTags,
         ApiUnauthorizedResponse,
       } from '@nestjs/swagger';`,
+      "import { Prisma } from '@prisma/client';",
     );
     importData.push(
       `import {
@@ -315,10 +316,10 @@ export default class Controller extends FileGeneral {
     let createManyServiceParam: string[] = [];
     createManyDecorator.push(`@Post('many')`);
     createManyDecorator.push(`@ApiOperation({summary:'Api for createMany'})`);
-    createManyDecorator.push(`@ApiResponse({ status: HttpStatus.CREATED, description: 'DESCSTATUS', type: [${this.model.name}]})`);
+    createManyDecorator.push(`@ApiResponse({ status: HttpStatus.CREATED, description: 'DESCSTATUS', type: 'Prisma.BatchPayload'})`);
     if (!!this.parent.createManyParamBody) {
       createManyDecorator.push(`@ApiBody({type:[${this.parent.createManyParamBody}]})`);
-      createManyParam.push(`@Body() body:${this.parent.createManyParamBody}`);
+      createManyParam.push(`@Body() body:${this.parent.createManyParamBody}[]`);
       createManyServiceParam.push('body');
     }
     if (!!this.parent.createManyParamParam) {
@@ -339,7 +340,7 @@ export default class Controller extends FileGeneral {
     createManyBody.push(`return ${Ser1}createMany(${createManyServiceParam.join(',')})`);
     bodyData.push(createManyDoc.join('\n'));
     bodyData.push(createManyDecorator.join('\n'));
-    bodyData.push(this.controllerFunctionGenerator('createMany', createManyParam.join(', '), this.model.name + '[]', createManyBody.join('\n')));
+    bodyData.push(this.controllerFunctionGenerator('createMany', createManyParam.join(', '), `'Prisma.BatchPayload'`, createManyBody.join('\n')));
 
     // PATCH updateOne ==> /:id (service.updateOne)
     ////CCCCC
