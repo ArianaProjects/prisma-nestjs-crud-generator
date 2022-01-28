@@ -63,25 +63,25 @@ export default class Service extends FileGeneral {
 
     let bodyData = [constructorGenerator(`private prismaService: PrismaService`)];
 
-    const idsWithNotDefault = ids.filter((id) => !id.default);
-    const needIdGenerator = idsWithNotDefault.length > 0;
-    const bodyCreateIdNotDefault: string[] = [];
+    // const idsWithNotDefault = ids.filter((id) => !id.default);
+    // const needIdGenerator = idsWithNotDefault.length > 0;
+    // const bodyCreateIdNotDefault: string[] = [];
 
-    if (needIdGenerator) {
-      idsWithNotDefault.map((id) => {
-        bodyData.push(
-          functionGenerator(
-            `${id.name}Generator`,
-            ``,
-            id.type == 'String' ? 'string' : 'number',
-            `
-        return ${id.type == 'String' ? '1' : 1},
-        `,
-          ),
-        );
-        bodyCreateIdNotDefault.push(`${id.name}:this.${id.name}Generator()`);
-      });
-    }
+    // if (needIdGenerator) {
+    //   idsWithNotDefault.map((id) => {
+    //     bodyData.push(
+    //       functionGenerator(
+    //         `${id.name}Generator`,
+    //         ``,
+    //         id.type == 'String' ? 'string' : 'number',
+    //         `
+    //     return ${id.type == 'String' ? '1' : 1},
+    //     `,
+    //       ),
+    //     );
+    //     bodyCreateIdNotDefault.push(`${id.name}:this.${id.name}Generator()`);
+    //   });
+    // }
 
     const Ser1 = `const ret = await this.prismaService.${this.toCamelCase(this.model.name)}.`;
     // exist
@@ -233,13 +233,13 @@ export default class Service extends FileGeneral {
     if (!!this.parent.createOneParamHeader) {
       createOneServiceParam.push('header:' + this.parent.createOneParamHeader);
     }
+    // ${bodyCreateIdNotDefault.join(',')}
     createOneBody.push(
       `
       ${Ser1}create
       ({
         data: 
         {
-              ${bodyCreateIdNotDefault.join(',')}
 
               ${createFields.map((f) => {
                 if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
@@ -268,6 +268,7 @@ export default class Service extends FileGeneral {
     if (!!this.parent.createManyParamHeader) {
       createManyServiceParam.push('header:' + this.parent.createManyParamHeader);
     }
+    // ${bodyCreateIdNotDefault.join(',')}
     createManyBody.push(
       `
       ${Ser1}createMany
@@ -275,7 +276,6 @@ export default class Service extends FileGeneral {
         data: 
 
         [body.map(b=>{
-          ${bodyCreateIdNotDefault.join(',')}
            return {${createFields.map((f) => {
              if (`!!b["${f.name}"]`) return `${f.name}: b["${f.name}"] `;
              return '';

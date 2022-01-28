@@ -56,10 +56,11 @@ export class PrismaGenerator {
   }
 
   run = async (): Promise<void> => {
-    console.log(this.options.generator);
+    // console.log(this.options.dmmf.datamodel.models);
     this.options.dmmf.datamodel.models.map((m) => {
+      console.log('start');
       const M = new Model(m, this.options.generator.output.value + '/');
-      M.toString();
+      // M.toString();
     });
     return;
   };

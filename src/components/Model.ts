@@ -103,7 +103,7 @@ export default class Model extends FileGeneral {
   }
 
   public toString() {
-    // console.log(this.model);
+    console.log(this.model);
     // this.module.toString();
     // this.dto.toString();
     // this.entity.toString();
