@@ -1,6 +1,6 @@
 {
 	"name": "@ariana-germany/prisma-code-generator",
-	"version": "0.2.6",
+	"version": "0.2.7",
 	"description": "code generator from Prisma schema",
 	"main": "dist/index.js",
 	"license": "MIT",
