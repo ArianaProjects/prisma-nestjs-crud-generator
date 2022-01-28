@@ -59,7 +59,7 @@ export class PrismaGenerator {
     console.log(this.options.generator);
     this.options.dmmf.datamodel.models.map((m) => {
       const M = new Model(m, this.options.generator.output.value + '/');
-      // M.toString();
+      M.toString();
     });
     return;
   };

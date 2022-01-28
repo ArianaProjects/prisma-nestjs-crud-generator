@@ -1,8 +1,8 @@
 import { DMMF } from '@prisma/generator-helper/dist/dmmf';
 import { classGenerator, constructorGenerator } from '../templates/class';
-import { functionPromiseGenerator } from '../templates/function';
+import { functionGenerator, functionPromiseGenerator } from '../templates/function';
 import { tryCatchGenerator } from '../templates/tryCatch';
-import { blackListFIelds, prettierFormat } from '../util';
+import { blackListFIelds, prettierFormat, tsTypes } from '../util';
 import FileGeneral from './File';
 import Model from './Model';
 
@@ -26,7 +26,6 @@ export default class Service extends FileGeneral {
     const fields = this.model.fields.filter((x) => !blackListFIelds(x.name) && x.kind != 'object');
     const createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
     const updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
-
     let importData = ["import { PrismaService } from 'src/shared/services/prisma.service';", "import { HttpException, HttpStatus, Injectable } from '@nestjs/common';"];
     importData.push(
       `import {
@@ -63,6 +62,26 @@ export default class Service extends FileGeneral {
     let decorator = ['@Injectable()'];
 
     let bodyData = [constructorGenerator(`private prismaService: PrismaService`)];
+
+    const idsWithNotDefault = ids.filter((id) => !id.default);
+    const needIdGenerator = idsWithNotDefault.length > 0;
+    const bodyCreateIdNotDefault: string[] = [];
+
+    if (needIdGenerator) {
+      idsWithNotDefault.map((id) => {
+        bodyData.push(
+          functionGenerator(
+            `${id.name}Generator`,
+            ``,
+            id.type == 'String' ? 'string' : 'number',
+            `
+        return ${id.type == 'String' ? '1' : 1},
+        `,
+          ),
+        );
+        bodyCreateIdNotDefault.push(`${id.name}:this.${id.name}Generator()`);
+      });
+    }
 
     const Ser1 = `const ret = await this.prismaService.${this.toCamelCase(this.model.name)}.`;
     // exist
@@ -219,10 +238,13 @@ export default class Service extends FileGeneral {
       ${Ser1}create
       ({
         data: 
-            {${createFields.map((f) => {
-              if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
-              return '';
-            })}}
+        {
+              ${bodyCreateIdNotDefault.join(',')}
+
+              ${createFields.map((f) => {
+                if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
+                return '';
+              })}}
       });
       return ret
 `,
@@ -253,6 +275,7 @@ export default class Service extends FileGeneral {
         data: 
 
         [body.map(b=>{
+          ${bodyCreateIdNotDefault.join(',')}
            return {${createFields.map((f) => {
              if (`!!b["${f.name}"]`) return `${f.name}: b["${f.name}"] `;
              return '';
