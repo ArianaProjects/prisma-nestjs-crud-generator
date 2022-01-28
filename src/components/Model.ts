@@ -121,7 +121,7 @@ export default class Model extends FileGeneral {
   public preGenerate() {
     this.existParamQuery = `Find${this.toPascalCase(this.model.name)}Dto`;
     this.findUniqParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.findManyParamQuery = `${this.toPascalCase(this.model.name)}`;
+    this.findManyParamQuery = `Find${this.toPascalCase(this.model.name)}Dto`;
     this.createOneParamBody = `Create${this.toPascalCase(this.model.name)}Dto`;
     this.createManyParamBody = `Create${this.toPascalCase(this.model.name)}Dto`;
     this.updateOneParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;

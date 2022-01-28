@@ -37,7 +37,7 @@ export default class Entity extends FileGeneral {
     ];
     let prismaImport = ['Prisma'];
 
-    const bodyConnect = this.model.fields
+    const bodyEntity = this.model.fields
       .map((f) => {
         if (f.kind == 'enum') {
           prismaImport.push(`, ${f.type}`);
@@ -62,7 +62,7 @@ export default class Entity extends FileGeneral {
         .join('\n') +
       "} from '@prisma/client'";
 
-    const connectClass = classGenerator(`${this.model.name}`, bodyConnect);
+    const connectClass = classGenerator(`${this.model.name}`, bodyEntity);
 
     this.fileContent = prettierFormat(`
     ${importImported}

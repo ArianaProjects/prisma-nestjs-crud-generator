@@ -323,7 +323,7 @@ export default class Controller extends FileGeneral {
     }
     if (!!this.parent.createManyParamParam) {
       // createManyDecorator.push(`@ApiParam({type:[${this.parent.createManyParamParam}]})`);
-      createManyParam.push(`@Param() param:${this.parent.createManyParamParam}`);
+      createManyParam.push(`@Param() param:${this.parent.createManyParamParam}[]`);
       createManyServiceParam.push('param');
     }
     if (!!this.parent.createManyParamQuery) {

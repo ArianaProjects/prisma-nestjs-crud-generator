@@ -24,6 +24,8 @@ export default class Service extends FileGeneral {
     const ids = this.model.fields.filter((x) => x.isId);
     const uniques = this.model.fields.filter((x) => x.isUnique);
     const fields = this.model.fields.filter((x) => !blackListFIelds(x.name) && x.kind != 'object');
+    const createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
+    const updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !blackListFIelds(x.name));
 
     let importData = ["import { PrismaService } from 'src/shared/services/prisma.service';", "import { HttpException, HttpStatus, Injectable } from '@nestjs/common';"];
     importData.push(
@@ -217,7 +219,7 @@ export default class Service extends FileGeneral {
       ${Ser1}create
       ({
         data: 
-            {${fields.map((f) => {
+            {${createFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
@@ -251,7 +253,7 @@ export default class Service extends FileGeneral {
         data: 
 
         [body.map(b=>{
-           return {${fields.map((f) => {
+           return {${createFields.map((f) => {
              if (`!!b["${f.name}"]`) return `${f.name}: b["${f.name}"] `;
              return '';
            })}
@@ -290,7 +292,7 @@ export default class Service extends FileGeneral {
           })}
         },
         data: 
-            {${fields.map((f) => {
+            {${updateFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
@@ -328,7 +330,7 @@ export default class Service extends FileGeneral {
           })}
         }, 
         data: 
-            {${fields.map((f) => {
+            {${updateFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
@@ -359,7 +361,7 @@ export default class Service extends FileGeneral {
       ${Ser1}updateMany
       ({
         data: 
-            {${fields.map((f) => {
+            {${updateFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
@@ -396,7 +398,7 @@ export default class Service extends FileGeneral {
           })}
         },
         data: 
-            {${fields.map((f) => {
+            {${updateFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
@@ -433,7 +435,7 @@ export default class Service extends FileGeneral {
           })}
         }, 
         data: 
-            {${fields.map((f) => {
+            {${updateFields.map((f) => {
               if (`!!body["${f.name}"]`) return `${f.name}: body["${f.name}"] `;
               return '';
             })}}
