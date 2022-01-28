@@ -8,7 +8,7 @@
   <h2 align="center">Prisma Code Generator</h2>
 
   <p align="center">
-    An full CRUD generator for NestJs with Prisma Schema
+    A full CRUD generator for NestJs with Prisma Schema
     <br />
     <a href="https://github.com/ariana-germany/prisma-code-generator"><strong>Explore the docs »</strong></a>
     <br />
