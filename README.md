@@ -1,5 +1,7 @@
 # Prisma Code Generator
 
+> **WARNING**: This project is a BETA PHASE
+
 ## **Intro**
 
 Prisma Code Generator CRUD Generator from the Prisma Schema for NestJs with most used Decorator for Entities and DTOs and controllers. This generator works with PostgreSQL. This Generator generates the following files for each Model.
