@@ -4,6 +4,7 @@
 	"description": "code generator from Prisma schema",
 	"main": "dist/index.js",
 	"license": "MIT",
+	"homepage": "https://www.arianagermany.com",
 	"repository": "https://github.com/ariana-germany/prisma-code-generator",
 	"keywords": [
 		"prisma",
