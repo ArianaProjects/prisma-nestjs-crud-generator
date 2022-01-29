@@ -54,7 +54,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many great Generators available on GitHub for Prisma Schema; however, We didn't find one that met our needs or CRUD generator, so we created this advanced generator.
+There are many great Generators available on GitHub for Prisma Schema; however we wanted a fully automatic and complete generator which is compatible with [NestJs](https://nestjs.com/) and we didn't find. So we created this advanced generator.
 
 Of course, no one Generators will serve all projects since your needs may be different. So We'll be adding more in the near future. You may also suggest changes by forking this repo, creating a pull request, or opening an issue. Thanks to all the people who have contributed to expanding this template!
 
@@ -99,9 +99,9 @@ generator Prisma_Code_Generator {
 }
 ```
 
-output is relative to Prisma.schema File and should be an folder.
+Output path is relative to the path of the Prisma.schema File and should be an folder.
 
-> **_WARNING_**: If you have some folders in your output path with the same name az models, our generator will overwrite this folder.
+> **_WARNING_**: Generator will overwrite the folders with the same name as models in the output path.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -109,7 +109,7 @@ output is relative to Prisma.schema File and should be an folder.
 
 ## Generation
 
-with all generation commands of Prisma cli our generator generate what you want in the output folder.
+The Prisma command line interface (CLI) is the primary way to interact with our Generator.
 
 for example:
 
