@@ -1,142 +1,132 @@
 import { DMMF } from '@prisma/generator-helper/dist/dmmf';
-import { log, writeTSFile } from '../util';
-import Controller from './Controller';
-import DTO from './DTO';
-import Entity from './Entity';
-import FileGeneral from './File';
-import ModuleG from './Module';
-import Service from './Service';
+import { OptionInterface } from '../interfaces';
+import { importGenerator, moduleGenerator } from '../templates';
+import { defaultGenerator, log, prettierFormatFormat, tsTypes, writeTSFile } from '../util';
+import CRUD from './CRUD';
+import FileGenerator from './FileGenerator';
+import Types from './Types';
 
-export default class Model extends FileGeneral {
+export default class Model extends FileGenerator {
   model: DMMF.Model;
-  module: ModuleG;
-  entity: Entity;
-  dto: DTO;
-  controller: Controller;
-  service: Service;
+  option: OptionInterface;
 
-  existParamBody: string;
-  existParamParam: string;
-  existParamQuery: string;
-  existParamHeader: string;
-  findUniqParamBody: string;
-  findUniqParamParam: string;
-  findUniqParamQuery: string;
-  findUniqParamHeader: string;
-  findManyParamBody: string;
-  findManyParamParam: string;
-  findManyParamQuery: string;
-  findManyParamHeader: string;
-  getAllParamBody: string;
-  getAllParamParam: string;
-  getAllParamQuery: string;
-  getAllParamHeader: string;
-  createOneParamBody: string;
-  createOneParamParam: string;
-  createOneParamQuery: string;
-  createOneParamHeader: string;
-  createManyParamBody: string;
-  createManyParamParam: string;
-  createManyParamQuery: string;
-  createManyParamHeader: string;
-  updateOneParamBody: string;
-  updateOneParamParam: string;
-  updateOneParamQuery: string;
-  updateOneParamHeader: string;
-  updateManyParamBody: string;
-  updateManyParamParam: string;
-  updateManyParamQuery: string;
-  updateManyParamHeader: string;
-  updateAllParamBody: string;
-  updateAllParamParam: string;
-  updateAllParamQuery: string;
-  updateAllParamHeader: string;
-  updateAdminOneParamBody: string;
-  updateAdminOneParamParam: string;
-  updateAdminOneParamQuery: string;
-  updateAdminOneParamHeader: string;
-  updateAdminManyParamBody: string;
-  updateAdminManyParamParam: string;
-  updateAdminManyParamQuery: string;
-  updateAdminManyParamHeader: string;
-  updateAdminAllParamBody: string;
-  updateAdminAllParamParam: string;
-  updateAdminAllParamQuery: string;
-  updateAdminAllParamHeader: string;
-  deleteOneParamBody: string;
-  deleteOneParamParam: string;
-  deleteOneParamQuery: string;
-  deleteOneParamHeader: string;
-  deleteManyParamBody: string;
-  deleteManyParamParam: string;
-  deleteManyParamQuery: string;
-  deleteManyParamHeader: string;
-  deleteAllParamBody: string;
-  deleteAllParamParam: string;
-  deleteAllParamQuery: string;
-  deleteAllParamHeader: string;
-  deleteAdminOneParamBody: string;
-  deleteAdminOneParamParam: string;
-  deleteAdminOneParamQuery: string;
-  deleteAdminOneParamHeader: string;
-  deleteAdminManyParamBody: string;
-  deleteAdminManyParamParam: string;
-  deleteAdminManyParamQuery: string;
-  deleteAdminManyParamHeader: string;
-  deleteAdminAllParamBody: string;
-  deleteAdminAllParamParam: string;
-  deleteAdminAllParamQuery: string;
-  deleteAdminAllParamHeader: string;
+  types: Types;
+  crud: CRUD;
+
+  idFields: DMMF.Field[];
+  createFields: DMMF.Field[];
+  updateFields: DMMF.Field[];
+  connectFields: DMMF.Field[];
+  findFields: DMMF.Field[];
+  uniqFields: DMMF.Field[];
+  entityFields: DMMF.Field[];
+  idsNoDefault: DMMF.Field[];
+
+  enumFields: DMMF.Field[];
+  objectFields: DMMF.Field[];
+
+  blackList: string[] = ['deletedAt', 'updatedAt', 'createdAt'];
+
+  nameCamel: string;
+  namePascal: string;
+
+  module: string;
 
   fullPath: string;
-  constructor(model: DMMF.Model, fullPath: string) {
+  constructor(model: DMMF.Model, option: OptionInterface) {
     super();
     this.model = model;
-    this.fullPath = fullPath;
-    this.preGenerate();
-    this.module = new ModuleG(model);
-    this.entity = new Entity(model);
-    this.dto = new DTO(model);
-    this.controller = new Controller(model, this);
-    this.service = new Service(model, this);
-    this.postGenerate();
+    this.option = option;
+    this.fullPath = option.fullPath && option.fullPath;
+    this.preGenerator();
+    this.types = new Types(this);
+    this.crud = new CRUD(this);
   }
+
+  public preGenerator() {
+    this.idFields = this.model.fields.filter((x) => x.isId);
+    this.createFields = this.model.fields.filter(
+      (x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name),
+    );
+    this.updateFields = this.model.fields.filter(
+      (x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name),
+    );
+    this.connectFields = this.model.fields.filter((x) => x.isId);
+    this.findFields = this.model.fields.filter((x) => x.isId || x.isUnique);
+    this.uniqFields = this.model.fields.filter((x) => x.isUnique);
+    this.entityFields = this.model.fields;
+    this.enumFields = this.model.fields.filter((x) => x.kind == 'enum');
+    this.objectFields = this.model.fields.filter((x) => x.kind == 'object');
+    this.idsNoDefault = this.idFields.filter((x) => !x.default);
+
+    this.nameCamel = this.toCamelCase(this.model.name);
+    this.namePascal = this.toPascalCase(this.model.name);
+    console.log(this.nameCamel, this.namePascal);
+
+    this.module = `
+    import {  Module } from '@nestjs/common';
+    ${importGenerator(this.namePascal + 'Controller ', '"./' + this.nameCamel + '.controller"')}
+    ${importGenerator(this.namePascal + 'Service ', '"./' + this.nameCamel + '.service"')}
+    ${moduleGenerator(
+      this.namePascal + 'Module',
+      '',
+      '',
+      this.namePascal + 'Controller',
+      this.namePascal + 'Service',
+    )}`;
+  }
+
+  public generator() {}
 
   public toString() {
-    console.log(this.model);
-    // this.module.toString();
-    // this.dto.toString();
-    // this.entity.toString();
-    // this.controller.toString();
-    // this.service.toString();
-  }
-  public postGenerate() {
-    writeTSFile(this.fullPath + `${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.dto.ts`, this.dto.fileContentGetter, false);
-    writeTSFile(this.fullPath + `${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.entity.ts`, this.entity.fileContentGetter, false);
-    writeTSFile(this.fullPath + `${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.controller.ts`, this.controller.fileContentGetter, false);
-    writeTSFile(this.fullPath + `${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.service.ts`, this.service.fileContentGetter, false);
-    writeTSFile(this.fullPath + `${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.module.ts`, this.module.fileContentGetter, false);
+    console.log(this.types.dto);
+    console.log(this.types.entity);
+    console.log(this.crud.controller);
+    console.log(this.crud.service);
   }
 
-  public preGenerate() {
-    this.existParamQuery = `Find${this.toPascalCase(this.model.name)}Dto`;
-    this.findUniqParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.findManyParamQuery = `Find${this.toPascalCase(this.model.name)}Dto`;
-    this.createOneParamBody = `Create${this.toPascalCase(this.model.name)}Dto`;
-    this.createManyParamBody = `Create${this.toPascalCase(this.model.name)}Dto`;
-    this.updateOneParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.updateOneParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.updateManyParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.updateManyParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAllParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAdminOneParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAdminOneParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAdminManyParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAdminManyParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.updateAdminAllParamBody = `Update${this.toPascalCase(this.model.name)}Dto`;
-    this.deleteOneParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.deleteManyParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.deleteAdminOneParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
-    this.deleteAdminManyParamParam = `Connect${this.toPascalCase(this.model.name)}Dto`;
+  public postGenerate() {
+    writeTSFile(
+      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.dto.ts`,
+      this.types.dto,
+      false,
+    );
+    writeTSFile(
+      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.entity.ts`,
+      this.types.entity,
+      false,
+    );
+    writeTSFile(
+      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.controller.ts`,
+      this.crud.controller,
+      false,
+    );
+    writeTSFile(
+      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.service.ts`,
+      this.crud.service,
+      false,
+    );
+    writeTSFile(
+      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.module.ts`,
+      this.module,
+      false,
+    );
+  }
+
+  public isInBlackList(name: string) {
+    return this.blackList.includes('name');
+  }
+
+  public replace(s: any) {
+    if (typeof s == 'string')
+      return s
+        .replace('NAME_PASCAL', this.namePascal)
+        .replace('NAME_CAMEL', this.nameCamel)
+        .replace('ENTITY', this.namePascal)
+        .replace('CREATE_DTO', `Create${this.namePascal}Dto`)
+        .replace('CONNECT_DTO', `Connect${this.namePascal}Dto`)
+        .replace('FIND_DTO', `Find${this.namePascal}Dto`)
+        .replace('UPDATE_DTO', `Update${this.namePascal}Dto`);
+    return s;
   }
 }

@@ -5,6 +5,9 @@ import { GeneratorPathNotExists } from './error-handler';
 import * as prettier from 'prettier';
 import { JSONSchema7 } from 'json-schema';
 import Model from './components/Model';
+import { OptionInterface } from './interfaces';
+import { importGenerator, moduleGenerator } from './templates';
+import { prettierFormatFormat, writeTSFile } from './util';
 
 export const GENERATOR_NAME = 'Prisma Code Generator';
 export interface PrismaCodeGeneratorConfig {}
@@ -57,11 +60,30 @@ export class PrismaGenerator {
 
   run = async (): Promise<void> => {
     // console.log(this.options.dmmf.datamodel.models);
+    const o: OptionInterface = {
+      fullPath: './gen',
+    };
+
+    let impFile: string[] = ["import {  Module } from '@nestjs/common';"];
+    let impModule: string[] = [];
+
     this.options.dmmf.datamodel.models.map((m) => {
-      console.log('start');
-      const M = new Model(m, this.options.generator.output.value + '/');
-      // M.toString();
+      const M = new Model(m, o);
+      M.postGenerate();
+      impFile.push(
+        importGenerator(M.namePascal + 'Controller', '"./' + M.nameCamel + '/' + M.nameCamel + '.controller"'),
+      );
+      impModule.push(M.namePascal + 'Controller');
     });
+
+    writeTSFile(
+      o.fullPath + `/GeneralModel.module.ts`,
+      `
+      ${impFile.join('\n')}
+      ${moduleGenerator('GeneralModelModule', '', '', impModule.join(','), '')}
+      `,
+      false,
+    );
     return;
   };
 }

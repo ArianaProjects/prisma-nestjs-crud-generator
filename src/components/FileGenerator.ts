@@ -25,7 +25,7 @@ export default class FileGeneral {
       s
         // @ts-ignore
         .split(' ')
-        .map((x, i) => {
+        .map((x: string, i: number) => {
           if (i > 0) return x.charAt(0).toUpperCase() + x.slice(1);
           else return x.charAt(0).toLowerCase() + x.slice(1);
         })
@@ -43,7 +43,7 @@ export default class FileGeneral {
       s
         // @ts-ignore
         .split(' ')
-        .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
+        .map((x: string) => x.charAt(0).toUpperCase() + x.slice(1))
         .join('')
     );
   }
