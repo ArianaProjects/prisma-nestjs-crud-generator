@@ -5,6 +5,7 @@ import { GENERATOR_NAME } from './generator';
 import { GeneratorFormatNotValidError } from './error-handler';
 import { DMMF } from '@prisma/generator-helper';
 import { Options, format } from 'prettier';
+import { ReqNames } from './interfaces';
 
 export const log = (src: string) => {
   logger.info(`[${GENERATOR_NAME}]:${src}`);
@@ -31,54 +32,36 @@ export const writeTSFile = (fullPath: string, content: string, dryRun = true) =>
   if (fs.existsSync(dirname) === false) {
     fs.mkdirSync(dirname, { recursive: true });
   }
-  fs.writeFileSync(fullPath, content);
+  fs.writeFileSync(fullPath, prettierFormatFormat(content));
 };
 
 export const prettierFormat = (content: string) => {
-  return format(content, { parser: 'typescript', singleQuote: true, trailingComma: 'all', semi: true, printWidth: 250, arrowParens: 'always', bracketSpacing: true });
+  return format(content, {
+    parser: 'typescript',
+    singleQuote: true,
+    trailingComma: 'all',
+    semi: true,
+    printWidth: 250,
+    arrowParens: 'always',
+    bracketSpacing: true,
+  });
 };
 export const prettierFormatFormat = (content: string, options: Options = {}) => {
   return format(content, { ...options, parser: 'typescript' });
 };
 
-export function tsTypes(type: string | DMMF.SchemaEnum | DMMF.OutputType | DMMF.SchemaArg) {
+export function tsTypes(type: string | any) {
   if (type == 'Int' || type == 'BigInt') return 'number';
   else if (type == 'String' || type == 'Text') return 'string';
   else if (type == 'DateTime') return 'Date';
   else if (type == 'Boolean') return 'boolean';
-  else if (type == 'Decimal') return 'Prisma.Decimal';
+  else if (type == 'Decimal' || type == 'Float') return 'Prisma.Decimal';
+  else if (type == 'Json') return 'Prisma.JsonValue';
   else return type;
 }
-export function tsTypesDecorator(f: DMMF.Field) {
-  let ret = '';
-  if (f.isList) ret = ret + '\n@IsArray()';
 
-  if (f.isRequired && f.kind != 'object') ret = ret + '\n@IsNotEmpty()';
-  else ret = ret + '\n@IsOptional()';
-
-  if (f.kind == 'enum') return ret + '\n@IsEnum(' + f.type + ')';
-  if (f.kind == 'object') return ret + '\n@ValidateNested()';
-
-  if (f.type == 'Int' || f.type == 'BigInt') return (ret = ret + '\n@IsNumber()');
-  else if (f.type == 'String' || f.type == 'Text') return (ret = ret + '\n@IsString()');
-  else if (f.type == 'DateTime') return (ret = ret + '\n@IsDate()');
-  else if (f.type == 'Boolean') return (ret = ret + '\n@IsBoolean()');
-  else if (f.type == 'Decimal') return '\n@IsDecimal()';
-  else return (ret = ret + '\n@IsObject()');
-}
-export function apiPropertyDecorator(f: DMMF.Field): string {
-  let ret = '@ApiProperty({';
-
-  if (f.isList) ret = ret + `isArray: true,`;
-  if (f.kind == 'object') ret = ret + `type: ${f.type},`;
-  else if (f.kind == 'enum') ret = ret + `enum: ${f.type},`;
-  else if (f.kind == 'unsupported') ret = ret + `// TODO`;
-  ret = ret + ` })`;
-  return ret;
-}
-export function blackListFIelds(name: string) {
-  if (name == 'deletedAt' || name == 'updatedAt' || name == 'createdAt') return true;
-  return false;
+export function defaultGenerator(name: string, type: string): string {
+  return '';
 }
 export function isUrl(f: DMMF.Field): boolean {
   const sl = f.name.toLocaleLowerCase();
@@ -110,7 +93,9 @@ export function isZipcode(f: DMMF.Field): boolean {
 }
 export function isMoney(f: DMMF.Field): boolean {
   const sl = f.name.toLocaleLowerCase();
-  return tsTypes(f.type) == 'number' || (tsTypes(f.type) == 'Prisma.Decimal' && sl.includes('cost')) || sl.includes('amount');
+  return (
+    tsTypes(f.type) == 'number' || (tsTypes(f.type) == 'Prisma.Decimal' && sl.includes('cost')) || sl.includes('amount')
+  );
 }
 export function isDescription(f: DMMF.Field): boolean {
   const sl = f.name.toLocaleLowerCase();
