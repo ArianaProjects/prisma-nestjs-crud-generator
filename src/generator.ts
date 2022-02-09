@@ -59,9 +59,9 @@ export class PrismaGenerator {
   }
 
   run = async (): Promise<void> => {
-    // console.log(this.options.dmmf.datamodel.models);
-    const o: OptionInterface = {
-      fullPath: './gen',
+    console.log(this.options.generator);
+    let o: OptionInterface = {
+      fullPath: this.options.generator.output.value || './gen',
     };
 
     let impFile: string[] = ["import {  Module } from '@nestjs/common';"];
