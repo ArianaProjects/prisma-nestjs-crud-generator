@@ -97,12 +97,12 @@ export default class CRUD {
   private apiRequestDecorator(option: functionFixConfig) {
     let res: string[] = [];
 
-    // ApiQuery
-    if (option.query) {
-      res.push('@ApiQuery({');
-      res.push('type:' + this.parent.replace(option.query));
-      res.push('})');
-    }
+    // // ApiQuery
+    // if (option.query) {
+    //   res.push('@ApiQuery({');
+    //   res.push('type:' + this.parent.replace(option.query));
+    //   res.push('})');
+    // }
 
     // // ApiParam
     // if (option.param) {

@@ -364,7 +364,7 @@ export const fixedConfig: fixedConfigInterface = {
     },
     deleteAdminOne: {
       param: 'CONNECT_DTO',
-      fixedPath: '',
+      fixedPath: 'admin',
       resp: `ENTITY`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.delete({
@@ -392,7 +392,7 @@ export const fixedConfig: fixedConfigInterface = {
     deleteAdminMany: {
       param: 'CONNECT_DTO',
       paramArray: true,
-      fixedPath: 'many',
+      fixedPath: 'adminmany',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany({
@@ -422,7 +422,7 @@ export const fixedConfig: fixedConfigInterface = {
       ],
     },
     deleteAdminAll: {
-      fixedPath: 'all',
+      fixedPath: 'adminall',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany();

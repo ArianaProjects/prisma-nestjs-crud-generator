@@ -83,7 +83,7 @@ export default class Model extends FileGenerator {
   }
 
   public isInBlackList(name: string) {
-    return this.blackList.includes('name');
+    return this.blackList.includes(name);
   }
 
   public replace(s: any) {
