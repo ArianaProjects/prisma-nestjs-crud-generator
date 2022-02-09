@@ -22,13 +22,14 @@ export function classGenerator(name: string, body: string, decorator: string = '
     }`;
 }
 
-export function moduleGenerator(
-  name: string,
-  IMPORTS: string,
-  PROVIDERS: string,
-  CONTROLLERS: string,
-  EXPORTS: string,
-) {
+export function classDefaultGenerator(name: string, body: string, decorator: string = '') {
+  return `${decorator}
+  export default class ${name} {
+      ${body}
+    }`;
+}
+
+export function moduleGenerator(name: string, IMPORTS: string, PROVIDERS: string, CONTROLLERS: string, EXPORTS: string) {
   return classGenerator(name, '', ModuleDecoratorGenerator(IMPORTS, PROVIDERS, CONTROLLERS, EXPORTS));
 }
 

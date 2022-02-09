@@ -45,12 +45,8 @@ export default class Model extends FileGenerator {
 
   public preGenerator() {
     this.idFields = this.model.fields.filter((x) => x.isId);
-    this.createFields = this.model.fields.filter(
-      (x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name),
-    );
-    this.updateFields = this.model.fields.filter(
-      (x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name),
-    );
+    this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.connectFields = this.model.fields.filter((x) => x.isId);
     this.findFields = this.model.fields.filter((x) => x.isId || x.isUnique);
     this.uniqFields = this.model.fields.filter((x) => x.isUnique);
@@ -65,15 +61,9 @@ export default class Model extends FileGenerator {
 
     this.module = `
     import {  Module } from '@nestjs/common';
-    ${importGenerator(this.namePascal + 'Controller ', '"./' + this.nameCamel + '.controller"')}
-    ${importGenerator(this.namePascal + 'Service ', '"./' + this.nameCamel + '.service"')}
-    ${moduleGenerator(
-      this.namePascal + 'Module',
-      '',
-      '',
-      this.namePascal + 'Controller',
-      this.namePascal + 'Service',
-    )}`;
+    ${importGenerator('{' + this.namePascal + 'Controller }', '"./' + this.nameCamel + '.controller"')}
+    ${importGenerator('{' + this.namePascal + 'Service }', '"./' + this.nameCamel + '.service"')}
+    ${moduleGenerator(this.namePascal + 'Module', '', '', this.namePascal + 'Controller', this.namePascal + 'Service')}`;
   }
 
   public generator() {}
@@ -86,31 +76,11 @@ export default class Model extends FileGenerator {
   }
 
   public postGenerate() {
-    writeTSFile(
-      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.dto.ts`,
-      this.types.dto,
-      false,
-    );
-    writeTSFile(
-      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.entity.ts`,
-      this.types.entity,
-      false,
-    );
-    writeTSFile(
-      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.controller.ts`,
-      this.crud.controller,
-      false,
-    );
-    writeTSFile(
-      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.service.ts`,
-      this.crud.service,
-      false,
-    );
-    writeTSFile(
-      this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.module.ts`,
-      this.module,
-      false,
-    );
+    writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.dto.ts`, this.types.dto, false);
+    writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.entity.ts`, this.types.entity, false);
+    writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.controller.ts`, this.crud.controller, false);
+    writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.service.ts`, this.crud.service, false);
+    writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.module.ts`, this.module, false);
   }
 
   public isInBlackList(name: string) {
