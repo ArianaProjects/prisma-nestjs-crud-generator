@@ -18,7 +18,7 @@ export default class CRUD {
   constructor(parent: Model) {
     this.parent = parent;
     this.config = this.configParser(this.parent.option.configPath);
-    console.log('here', this.parent.model.fields);
+    // console.log('here', this.parent.model.fields);
     this.generate();
   }
 
@@ -40,7 +40,7 @@ export default class CRUD {
         ),
       );
     });
-    console.log(serBody);
+    // console.log(serBody);
     const keys = Object.keys(fixedConfig.functions);
 
     keys.map((f) => {
@@ -282,7 +282,7 @@ export default class CRUD {
          , ...b
         `,
         );
-        console.log(fix);
+        // console.log(fix);
       } else if (fix.includes('create') && !conf.bodyArray) {
         fix = conf.service.replace(
           '...body',
@@ -295,7 +295,7 @@ export default class CRUD {
          , ...body
         `,
         );
-        console.log(fix);
+        // console.log(fix);
       }
     }
     res.push(fix);
@@ -304,7 +304,7 @@ export default class CRUD {
 
   private controllerClassConstructor() {
     let res: string[] = [];
-    console.log('sad');
+    // console.log('sad');
     res.push(constructorGenerator(parameterPrivateGenerator(this.parent.nameCamel + 'Service', this.parent.namePascal + 'Service'), ''));
     return res.join('\n');
   }

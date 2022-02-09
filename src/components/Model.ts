@@ -69,10 +69,10 @@ export default class Model extends FileGenerator {
   public generator() {}
 
   public toString() {
-    console.log(this.types.dto);
-    console.log(this.types.entity);
-    console.log(this.crud.controller);
-    console.log(this.crud.service);
+    // console.log(this.types.dto);
+    // console.log(this.types.entity);
+    // console.log(this.crud.controller);
+    // console.log(this.crud.service);
   }
 
   public postGenerate() {
