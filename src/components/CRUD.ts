@@ -232,9 +232,10 @@ export default class CRUD {
 
   private controllerClassDecorator() {
     let res: string[] = [];
+    res.push(``);
     res.push(`@Controller('${this.parent.nameCamel}')`);
     res.push('@ApiBearerAuth()');
-    res.push(`@ApiTags(${this.parent.namePascal})`);
+    res.push(`@ApiTags("${this.parent.namePascal}")`);
     return res.join('\n');
   }
   private controllerFunctionComment(name: ReqNames) {
@@ -346,7 +347,7 @@ export default class CRUD {
         Post,
         Patch,
         Put,
-        Req,
+        Req,Injectable
       } from '@nestjs/common';
       import {
         ApiBearerAuth,
@@ -402,7 +403,7 @@ export default class CRUD {
         Post,
         Patch,
         Put,
-        Req,
+        Req,Injectable
       } from '@nestjs/common';
       import {
         ApiBearerAuth,
