@@ -1,15 +1,7 @@
 import { ReqNamesType } from './../interfaces';
 import { DMMF } from '@prisma/generator-helper/dist/dmmf';
 import { apiResponseInterface, functionFixConfig, generalConfig, ReqNames, ReqType } from '../interfaces';
-import {
-  classGenerator,
-  constructorGenerator,
-  decoratorGenerator,
-  functionGenerator,
-  functionPromiseGenerator,
-  parameterGenerator,
-  parameterPrivateGenerator,
-} from '../templates';
+import { classGenerator, constructorGenerator, decoratorGenerator, functionGenerator, functionPromiseGenerator, parameterGenerator, parameterPrivateGenerator } from '../templates';
 import Model from './Model';
 import fs from 'fs';
 import { fixedConfig } from './const';
@@ -82,10 +74,8 @@ export default class CRUD {
   private apiOperationDecorator(name: ReqNames) {
     let res: string[] = [];
     res.push('@ApiOperation({');
-    if (this.config && this.config.functions && !!this.config.functions[name].summary)
-      res.push(`summary:"${this.parent.replace(this.config.functions[name].summary)}",`);
-    if (this.config && this.config.functions && !!this.config.functions[name].description)
-      res.push(`description:"${this.parent.replace(this.config.functions[name].description)}",`);
+    if (this.config && this.config.functions && !!this.config.functions[name].summary) res.push(`summary:"${this.parent.replace(this.config.functions[name].summary)}",`);
+    if (this.config && this.config.functions && !!this.config.functions[name].description) res.push(`description:"${this.parent.replace(this.config.functions[name].description)}",`);
     res.push('})');
     return res.join('\n');
   }
@@ -256,13 +246,7 @@ export default class CRUD {
     return res.join('\n');
   }
 
-  private controllerFunction(
-    name: ReqNames,
-    conf: functionFixConfig,
-    apiOperator: boolean,
-    apiReq: boolean,
-    apiResp: boolean,
-  ) {
+  private controllerFunction(name: ReqNames, conf: functionFixConfig, apiOperator: boolean, apiReq: boolean, apiResp: boolean) {
     let res: string[] = [];
 
     const optionalConf = this.config && this.config.functions && this.config.functions[name];
@@ -272,27 +256,13 @@ export default class CRUD {
     if (apiResp) res.push(this.allApiResponseDecorators(conf.responses));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
     if (optionalConf && optionalConf.additionalDecorator) optionalConf.additionalDecorator.map((a) => res.push(a));
-    res.push(
-      functionPromiseGenerator(
-        ReqNames[name],
-        this.paramController(conf),
-        this.parent.replace(conf.resp),
-        this.parent.replace(this.controllerFunctionBody(name, conf)),
-      ),
-    );
+    res.push(functionPromiseGenerator(ReqNames[name], this.paramController(conf), this.parent.replace(conf.resp), this.parent.replace(this.controllerFunctionBody(name, conf))));
     return res.join('\n');
   }
 
   private serviceFunction(name: ReqNames, conf: functionFixConfig) {
     let res: string[] = [];
-    res.push(
-      functionPromiseGenerator(
-        ReqNames[name],
-        this.parent.replace(this.paramService(conf)),
-        this.parent.replace(conf.resp),
-        this.parent.replace(this.serviceFunctionBody(conf)),
-      ),
-    );
+    res.push(functionPromiseGenerator(ReqNames[name], this.parent.replace(this.paramService(conf)), this.parent.replace(conf.resp), this.parent.replace(this.serviceFunctionBody(conf))));
     return res.join('\n');
   }
 
@@ -306,7 +276,7 @@ export default class CRUD {
           `
         ${this.parent.idsNoDefault
           .map((id) => {
-            return `${id.name}:${id.name}Gen()`;
+            return `this.${id.name}:${id.name}Gen()`;
           })
           .join(`,`)}
          , ...b
@@ -319,7 +289,7 @@ export default class CRUD {
           `
         ${this.parent.idsNoDefault
           .map((id) => {
-            return `${id.name}:${id.name}Gen`;
+            return `this.${id.name}:${id.name}Gen`;
           })
           .join(`,`)}
          , ...body
@@ -335,12 +305,7 @@ export default class CRUD {
   private controllerClassConstructor() {
     let res: string[] = [];
     console.log('sad');
-    res.push(
-      constructorGenerator(
-        parameterPrivateGenerator(this.parent.nameCamel + 'Service', this.parent.namePascal + 'Service'),
-        '',
-      ),
-    );
+    res.push(constructorGenerator(parameterPrivateGenerator(this.parent.nameCamel + 'Service', this.parent.namePascal + 'Service'), ''));
     return res.join('\n');
   }
   private serviceClassConstructor() {
