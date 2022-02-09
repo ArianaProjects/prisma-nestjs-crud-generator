@@ -69,7 +69,7 @@ export class PrismaGenerator {
     this.options.dmmf.datamodel.models.map((m) => {
       const M = new Model(m, o);
       M.postGenerate();
-      impFile.push(importGenerator(M.namePascal + 'Module', '"./' + M.nameCamel + '/' + M.nameCamel + '.module"'));
+      impFile.push(importGenerator('{' + M.namePascal + 'Module}', '"./' + M.nameCamel + '/' + M.nameCamel + '.module"'));
       impModule.push(M.namePascal + 'Module');
     });
     writeTSFile(

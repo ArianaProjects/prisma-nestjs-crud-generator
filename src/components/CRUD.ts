@@ -226,11 +226,15 @@ export default class CRUD {
 
   private serviceClassDecorator() {
     let res: string[] = [];
+    res.push('@Injectable()');
     return res.join('\n');
   }
 
   private controllerClassDecorator() {
     let res: string[] = [];
+    res.push(`@Controller('${this.parent.nameCamel}')`);
+    res.push('@ApiBearerAuth()');
+    res.push(`@ApiTags(${this.parent.namePascal})`);
     return res.join('\n');
   }
   private controllerFunctionComment(name: ReqNames) {

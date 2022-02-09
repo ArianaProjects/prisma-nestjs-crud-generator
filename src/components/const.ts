@@ -39,7 +39,7 @@ export const fixedConfig: fixedConfigInterface = {
     findMany: {
       query: 'FIND_DTO',
       fixedPath: 'many',
-      resp: `ENTITY`,
+      resp: `ENTITY[]`,
       service: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...query },
@@ -48,7 +48,7 @@ export const fixedConfig: fixedConfigInterface = {
       responses: [
         {
           description: 'ENTITY',
-          type: 'ENTITY',
+          type: '[ENTITY]',
           status: 200,
         },
       ],
