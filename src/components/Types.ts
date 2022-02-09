@@ -90,36 +90,17 @@ export default class Types {
 
     res.push(importGenerator(importPrisma, '"@prisma/client"'));
     this.parent.objectFields.map((f) => {
-      res.push(
-        importGenerator(
-          '{' + this.parent.toPascalCase(f.name) + '}',
-          `"../${this.parent.toCamelCase(f.name)}/${this.parent.toCamelCase(f.name)}.entity"`,
-        ),
-      );
+      res.push(importGenerator('{' + this.parent.toPascalCase(f.name) + '}', `"../${this.parent.toCamelCase(f.name)}/${this.parent.toCamelCase(f.name)}.entity"`));
     });
-    console.log(res);
     return res.join('\n');
   }
 
-  private classGenerator(
-    name: string,
-    fields: DMMF.Field[],
-    classValidator: boolean = true,
-    classTransformer: boolean = true,
-    apiProperty: boolean = true,
-  ) {
-    const body = fields
-      .map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty))
-      .join('\n\n');
+  private classGenerator(name: string, fields: DMMF.Field[], classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true) {
+    const body = fields.map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty)).join('\n\n');
     return classGenerator(name, body);
   }
 
-  private fieldDecoratorGenerator(
-    f: DMMF.Field,
-    classValidator: boolean = true,
-    classTransformer: boolean = true,
-    apiProperty: boolean = true,
-  ) {
+  private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true) {
     let res: string[] = [];
     if (classTransformer) res.push(this.classTransformerDecorator(f));
     if (apiProperty) res.push(this.apiPropertyDecorator(f));
