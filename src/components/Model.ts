@@ -62,7 +62,7 @@ export default class Model extends FileGenerator {
     import {  Module } from '@nestjs/common';
     ${importGenerator('{' + this.namePascal + 'Controller }', '"./' + this.nameCamel + '.controller"')}
     ${importGenerator('{' + this.namePascal + 'Service }', '"./' + this.nameCamel + '.service"')}
-    ${moduleGenerator(this.namePascal + 'Module', '', '', this.namePascal + 'Controller', this.namePascal + 'Service')}`;
+    ${moduleGenerator(this.namePascal + 'Module', '', this.namePascal + 'Service', this.namePascal + 'Controller', '')}`;
   }
 
   public generator() {}
