@@ -276,7 +276,7 @@ export default class CRUD {
           `
         ${this.parent.idsNoDefault
           .map((id) => {
-            return `this.${id.name}:${id.name}Gen()`;
+            return `${id.name}:this.${id.name}Gen()`;
           })
           .join(`,`)}
          , ...b
@@ -289,7 +289,7 @@ export default class CRUD {
           `
         ${this.parent.idsNoDefault
           .map((id) => {
-            return `this.${id.name}:${id.name}Gen()`;
+            return `${id.name}:this.${id.name}Gen()`;
           })
           .join(`,`)}
          , ...body

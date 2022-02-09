@@ -57,7 +57,6 @@ export default class Model extends FileGenerator {
 
     this.nameCamel = this.toCamelCase(this.model.name);
     this.namePascal = this.toPascalCase(this.model.name);
-    console.log(this.nameCamel, this.namePascal);
 
     this.module = `
     import {  Module } from '@nestjs/common';
@@ -69,10 +68,10 @@ export default class Model extends FileGenerator {
   public generator() {}
 
   public toString() {
-    // console.log(this.types.dto);
-    // console.log(this.types.entity);
-    // console.log(this.crud.controller);
-    // console.log(this.crud.service);
+    console.log(this.types.dto);
+    console.log(this.types.entity);
+    console.log(this.crud.controller);
+    console.log(this.crud.service);
   }
 
   public postGenerate() {

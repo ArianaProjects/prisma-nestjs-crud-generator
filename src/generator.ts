@@ -59,7 +59,6 @@ export class PrismaGenerator {
   }
 
   run = async (): Promise<void> => {
-    console.log(this.options.generator);
     let o: OptionInterface = {
       fullPath: this.options.generator.output.value || './gen',
     };
@@ -73,7 +72,6 @@ export class PrismaGenerator {
       impFile.push(importGenerator(M.namePascal + 'Module', '"./' + M.nameCamel + '/' + M.nameCamel + '.module"'));
       impModule.push(M.namePascal + 'Module');
     });
-
     writeTSFile(
       o.fullPath + `/GeneralModel.module.ts`,
       `
