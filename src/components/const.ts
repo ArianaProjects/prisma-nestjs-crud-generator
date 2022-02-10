@@ -19,23 +19,6 @@ export const fixedConfig: fixedConfigInterface = {
         },
       ],
     },
-    findUniq: {
-      param: 'CONNECT_DTO',
-      fixedPath: '',
-      resp: `ENTITY`,
-      service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findUnique({
-        where: { ...param },
-      });
-      return ret;`,
-      responses: [
-        {
-          description: 'NAME_CAMEL',
-          type: 'ENTITY',
-          status: 200,
-        },
-      ],
-    },
     findMany: {
       query: 'FIND_DTO',
       fixedPath: 'many',
@@ -64,6 +47,23 @@ export const fixedConfig: fixedConfigInterface = {
           description: 'CREATE_DTO',
           status: 200,
           type: '[ENTITY]',
+        },
+      ],
+    },
+    findUniq: {
+      param: 'CONNECT_DTO',
+      fixedPath: '',
+      resp: `ENTITY`,
+      service: `    
+      const ret = await this.prismaService.NAME_CAMEL.findUnique({
+        where: { ...param },
+      });
+      return ret;`,
+      responses: [
+        {
+          description: 'NAME_CAMEL',
+          type: 'ENTITY',
+          status: 200,
         },
       ],
     },
@@ -103,33 +103,6 @@ export const fixedConfig: fixedConfigInterface = {
           description: 'FIND_DTO',
           status: 201,
           type: 'Number',
-        },
-      ],
-    },
-    updateOne: {
-      body: 'UPDATE_DTO',
-      param: 'CONNECT_DTO',
-      fixedPath: '',
-      resp: `ENTITY`,
-      service: `
-      const ret = await this.prismaService.NAME_CAMEL.update({
-        where: { ...param },
-        data: { ...body },
-      });
-      return ret;`,
-      responses: [
-        {
-          description: 'UPDATE_DTO',
-          status: 202,
-          type: 'ENTITY',
-        },
-        {
-          status: 406,
-          description: 'Not Acceptable',
-        },
-        {
-          status: 409,
-          description: 'Conflict',
         },
       ],
     },
@@ -193,10 +166,11 @@ export const fixedConfig: fixedConfigInterface = {
         },
       ],
     },
-    updateAdminOne: {
-      param: 'CONNECT_DTO',
+
+    updateOne: {
       body: 'UPDATE_DTO',
-      fixedPath: 'admin/',
+      param: 'CONNECT_DTO',
+      fixedPath: '',
       resp: `ENTITY`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.update({
@@ -279,14 +253,16 @@ export const fixedConfig: fixedConfigInterface = {
         },
       ],
     },
-    deleteOne: {
+
+    updateAdminOne: {
       param: 'CONNECT_DTO',
-      fixedPath: '',
+      body: 'UPDATE_DTO',
+      fixedPath: 'admin/',
       resp: `ENTITY`,
       service: `
-            const ret = await this.prismaService.NAME_CAMEL.update({
+      const ret = await this.prismaService.NAME_CAMEL.update({
         where: { ...param },
-        data: { deletedAt: new Date() },
+        data: { ...body },
       });
       return ret;`,
       responses: [
@@ -362,15 +338,15 @@ export const fixedConfig: fixedConfigInterface = {
         },
       ],
     },
-    deleteAdminOne: {
+
+    deleteOne: {
       param: 'CONNECT_DTO',
-      fixedPath: 'admin',
+      fixedPath: '',
       resp: `ENTITY`,
       service: `
-      const ret = await this.prismaService.NAME_CAMEL.delete({
-        where: {
-          id: param['id'],
-        },
+            const ret = await this.prismaService.NAME_CAMEL.update({
+        where: { ...param },
+        data: { deletedAt: new Date() },
       });
       return ret;`,
       responses: [
@@ -432,6 +408,34 @@ export const fixedConfig: fixedConfigInterface = {
           description: 'FIND_DTO',
           status: 202,
           type: 'Number',
+        },
+        {
+          status: 406,
+          description: 'Not Acceptable',
+        },
+        {
+          status: 409,
+          description: 'Conflict',
+        },
+      ],
+    },
+
+    deleteAdminOne: {
+      param: 'CONNECT_DTO',
+      fixedPath: 'admin',
+      resp: `ENTITY`,
+      service: `
+      const ret = await this.prismaService.NAME_CAMEL.delete({
+        where: {
+          id: param['id'],
+        },
+      });
+      return ret;`,
+      responses: [
+        {
+          description: 'UPDATE_DTO',
+          status: 202,
+          type: 'ENTITY',
         },
         {
           status: 406,
