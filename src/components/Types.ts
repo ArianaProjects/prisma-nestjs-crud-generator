@@ -26,10 +26,10 @@ export default class Types {
   private generateDTO() {
     let res: string[] = [];
     res.push(this.dtoImport());
-    res.push(this.classGenerator(`Create${this.parent.namePascal}Dto`, this.parent.createFields, true, false, true));
-    res.push(this.classGenerator(`Update${this.parent.namePascal}Dto`, this.parent.updateFields, true, false, true));
-    res.push(this.classGenerator(`Find${this.parent.namePascal}Dto`, this.parent.findFields, true, false, true));
-    res.push(this.classGenerator(`Connect${this.parent.namePascal}Dto`, this.parent.connectFields, true, false, true));
+    res.push(this.classGenerator(`Create${this.parent.namePascal}Dto`, this.parent.createFields, true, false, true, false));
+    res.push(this.classGenerator(`Update${this.parent.namePascal}Dto`, this.parent.updateFields, true, false, true, true));
+    res.push(this.classGenerator(`Find${this.parent.namePascal}Dto`, this.parent.findFields, true, false, true, true));
+    res.push(this.classGenerator(`Connect${this.parent.namePascal}Dto`, this.parent.connectFields, true, false, true, false));
     this.dto = res.join('\n');
   }
 
@@ -95,38 +95,37 @@ export default class Types {
     return res.join('\n');
   }
 
-  private classGenerator(name: string, fields: DMMF.Field[], classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true) {
-    const body = fields.map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty)).join('\n\n');
+  private classGenerator(name: string, fields: DMMF.Field[], classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean = true) {
+    const body = fields.map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty, isOptional)).join('\n\n');
     return classGenerator(name, body);
   }
 
-  private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true) {
+  private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean) {
     let res: string[] = [];
     if (classTransformer) res.push(this.classTransformerDecorator(f));
     if (apiProperty) res.push(this.apiPropertyDecorator(f));
-    if (classValidator) res.push(this.classValidatorDecorator(f));
+    if (classValidator) res.push(this.classValidatorDecorator(f, isOptional));
 
-    res.push(this.tsTypesDecorator(f));
     res.push(this.fieldGenerator(f));
     return res.join('\n');
   }
-  private tsTypesDecorator(f: DMMF.Field) {
-    let ret = '';
-    if (f.isList) ret = ret + '\n@IsArray()';
+  // private tsTypesDecorator(f: DMMF.Field) {
+  //   let ret = '';
+  //   if (f.isList) ret = ret + '\n@IsArray()';
 
-    if (f.isRequired && f.kind != 'object') ret = ret + '\n@IsNotEmpty()';
-    else ret = ret + '\n@IsOptional()';
+  //   if (f.isRequired && f.kind != 'object') ret = ret + '\n@IsNotEmpty()';
+  //   else ret = ret + '\n@IsOptional()';
 
-    if (f.kind == 'enum') return ret + '\n@IsEnum(' + f.type + ')';
-    if (f.kind == 'object') return ret + '\n@ValidateNested()';
+  //   if (f.kind == 'enum') return ret + '\n@IsEnum(' + f.type + ')';
+  //   if (f.kind == 'object') return ret + '\n@ValidateNested()';
 
-    if (f.type == 'Int' || f.type == 'BigInt') return (ret = ret + '\n@IsNumber()');
-    else if (f.type == 'String' || f.type == 'Text') return (ret = ret + '\n@IsString()');
-    else if (f.type == 'DateTime') return (ret = ret + '\n@IsDate()');
-    else if (f.type == 'Boolean') return (ret = ret + '\n@IsBoolean()');
-    else if (f.type == 'Decimal') return '\n@IsDecimal()';
-    else return (ret = ret + '\n@IsObject()');
-  }
+  //   if (f.type == 'Int' || f.type == 'BigInt') return (ret = ret + '\n@IsNumber()');
+  //   else if (f.type == 'String' || f.type == 'Text') return (ret = ret + '\n@IsString()');
+  //   else if (f.type == 'DateTime') return (ret = ret + '\n@IsDate()');
+  //   else if (f.type == 'Boolean') return (ret = ret + '\n@IsBoolean()');
+  //   else if (f.type == 'Decimal') return '\n@IsDecimal()';
+  //   else return (ret = ret + '\n@IsObject()');
+  // }
 
   private fieldGenerator(f: DMMF.Field) {
     let res: string[] = [];
@@ -147,6 +146,7 @@ export default class Types {
 
   private apiPropertyDecorator(f: DMMF.Field) {
     let res: string[] = [];
+    if (this.parent.isInBlackList(f.name)) return '';
     res.push('@ApiProperty({');
     // Array
     if (f.isList) res.push('isArray: true,');
@@ -164,12 +164,12 @@ export default class Types {
     return res.join('\n');
   }
 
-  private classValidatorDecorator(f: DMMF.Field) {
+  private classValidatorDecorator(f: DMMF.Field, isOptional: boolean) {
     let res: string[] = [];
     // array
     if (f.isList) res.push('@IsArray()');
     // required
-    if (f.isRequired && f.kind != 'object') res.push('@IsNotEmpty()');
+    if (!isOptional && f.isRequired && f.kind != 'object') res.push('@IsNotEmpty()');
     else res.push('@IsOptional()');
     // kind
     if (f.kind == 'enum') res.push(`@IsEnum( + ${f.type} + )`);

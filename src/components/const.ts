@@ -54,7 +54,7 @@ export const fixedConfig: fixedConfigInterface = {
       ],
     },
     getAll: {
-      fixedPath: 'all',
+      fixedPath: '',
       resp: `ENTITY[]`,
       service: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany();
@@ -170,7 +170,7 @@ export const fixedConfig: fixedConfigInterface = {
     updateAll: {
       paramArray: true,
       body: 'UPDATE_DTO',
-      fixedPath: 'all',
+      fixedPath: '',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
@@ -196,7 +196,7 @@ export const fixedConfig: fixedConfigInterface = {
     updateAdminOne: {
       param: 'CONNECT_DTO',
       body: 'UPDATE_DTO',
-      fixedPath: '',
+      fixedPath: 'admin/',
       resp: `ENTITY`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.update({
@@ -224,7 +224,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_DTO',
       body: 'UPDATE_DTO',
       paramArray: true,
-      fixedPath: 'many',
+      fixedPath: 'admin/many',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
@@ -256,7 +256,7 @@ export const fixedConfig: fixedConfigInterface = {
     },
     updateAdminAll: {
       body: 'UPDATE_DTO',
-      fixedPath: 'all',
+      fixedPath: 'admin',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
@@ -339,7 +339,7 @@ export const fixedConfig: fixedConfigInterface = {
       ],
     },
     deleteAll: {
-      fixedPath: 'all',
+      fixedPath: '',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
@@ -392,7 +392,7 @@ export const fixedConfig: fixedConfigInterface = {
     deleteAdminMany: {
       param: 'CONNECT_DTO',
       paramArray: true,
-      fixedPath: 'adminmany',
+      fixedPath: 'admin/many',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany({
@@ -422,7 +422,7 @@ export const fixedConfig: fixedConfigInterface = {
       ],
     },
     deleteAdminAll: {
-      fixedPath: 'adminall',
+      fixedPath: 'admin',
       resp: `Number`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany();

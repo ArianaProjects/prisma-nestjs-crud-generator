@@ -33,11 +33,13 @@ export default class Model extends FileGenerator {
   module: string;
 
   fullPath: string;
+  configPath: string;
   constructor(model: DMMF.Model, option: OptionInterface) {
     super();
     this.model = model;
     this.option = option;
     this.fullPath = option.fullPath && option.fullPath;
+    this.configPath = option.configPath;
     this.preGenerator();
     this.types = new Types(this);
     this.crud = new CRUD(this);

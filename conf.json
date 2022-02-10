@@ -1,0 +1,58 @@
+{
+    "functions": {
+        "exist": {
+            "disable": true
+        },
+        "findUniq": {
+            "disable": true
+        },
+        "findMany": {
+            "disable": true
+        },
+        "getAll": {
+            "disable": true
+        },
+        "createOne": {
+            "disable": true
+        },
+        "createMany": {
+            "disable": true
+        },
+        "updateOne": {
+            "disable": false
+        },
+        "updateMany": {
+            "disable": false
+        },
+        "updateAll": {
+            "disable": false
+        },
+        "updateAdminOne": {
+            "disable": false
+        },
+        "updateAdminMany": {
+            "disable": false
+        },
+        "updateAdminAll": {
+            "disable": false
+        },
+        "deleteOne": {
+            "disable": false
+        },
+        "deleteMany": {
+            "disable": false
+        },
+        "deleteAll": {
+            "disable": false
+        },
+        "deleteAdminOne": {
+            "disable": true
+        },
+        "deleteAdminMany": {
+            "disable": true
+        },
+        "deleteAdminAll": {
+            "disable": true
+        }
+    }
+}

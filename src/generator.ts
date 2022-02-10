@@ -59,8 +59,10 @@ export class PrismaGenerator {
   }
 
   run = async (): Promise<void> => {
+    console.log(this.options.generator);
     let o: OptionInterface = {
       fullPath: this.options.generator.output.value || './gen',
+      configPath: this.options.generator.config['config'] || undefined,
     };
 
     let impFile: string[] = ["import {  Module } from '@nestjs/common';"];
@@ -76,7 +78,7 @@ export class PrismaGenerator {
       o.fullPath + `/GeneralModel.module.ts`,
       `
       ${impFile.join('\n')}
-      ${moduleGenerator('GeneralModelModule', '', '', impModule.join(','), '')}
+      ${moduleGenerator('GeneralModelModule', impModule.join(','), '', '', '')}
       `,
       false,
     );

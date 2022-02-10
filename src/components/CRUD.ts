@@ -42,24 +42,26 @@ export default class CRUD {
     });
     // console.log(serBody);
     const keys = Object.keys(fixedConfig.functions);
-
+    console.log(this.config);
     keys.map((f) => {
-      const c = fixedConfig.functions[f];
-      //   // controller
-      conBody.push(this.controllerFunction(ReqNames[f], c, true, true, true));
-      //   // service
-      serBody.push(this.serviceFunction(ReqNames[f], c));
+      if (this.config && this.config.functions && this.config.functions[f] && !this.config.functions[f].disable) {
+        const c = fixedConfig.functions[f];
+        //   // controller
+        conBody.push(this.controllerFunction(ReqNames[f], c, true, true, true));
+        //   // service
+        serBody.push(this.serviceFunction(ReqNames[f], c));
+      }
     });
 
     this.controller = prettierFormatFormat(this.controllerGenerator(conBody.join('\n')));
     this.service = prettierFormatFormat(this.serviceGenerator(serBody.join('\n')));
   }
   private configParser(path?: string): generalConfig {
-    if (!!path) return JSON.parse(fs.readFileSync(path, 'utf-8')) as generalConfig;
+    if (!!path) return JSON.parse(fs.readFileSync(process.cwd() + '/' + path, 'utf-8')) as generalConfig;
     return null;
   }
 
-  private functionControllerDecorator(type: ReqType, conf: functionFixConfig) {
+  private functionControllerDecorator(type: ReqType, conf: functionFixConfig, name: string) {
     let res: string[] = [];
     let p: string[] = [conf.fixedPath];
     if (conf.param)
@@ -68,6 +70,8 @@ export default class CRUD {
         else p.push(`:${id.name}`);
       });
     res.push(decoratorGenerator(String(type), p.join('/')));
+    if (this.config && this.config.functions && !!this.config.functions[name].additionalDecorator) res.push(this.config.functions[name].additionalDecorator.join('\n'));
+
     return res.join('\n');
   }
 
@@ -236,6 +240,7 @@ export default class CRUD {
     res.push(`@Controller('${this.parent.nameCamel}')`);
     res.push('@ApiBearerAuth()');
     res.push(`@ApiTags("${this.parent.namePascal}")`);
+
     return res.join('\n');
   }
   private controllerFunctionComment(name: ReqNames) {
@@ -256,7 +261,7 @@ export default class CRUD {
 
     const optionalConf = this.config && this.config.functions && this.config.functions[name];
     res.push(this.controllerFunctionComment(name));
-    res.push(this.functionControllerDecorator(ReqType[ReqNamesType[name]], conf)); // TODO param
+    res.push(this.functionControllerDecorator(ReqType[ReqNamesType[name]], conf, name)); // TODO param
     if (apiOperator) res.push(this.apiOperationDecorator(name));
     if (apiResp) res.push(this.allApiResponseDecorators(conf.responses));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
