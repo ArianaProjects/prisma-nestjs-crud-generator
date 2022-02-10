@@ -49,8 +49,8 @@ export default class Model extends FileGenerator {
     this.idFields = this.model.fields.filter((x) => x.isId);
     this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
-    this.connectFields = this.model.fields.filter((x) => x.isId);
-    this.findFields = this.model.fields.filter((x) => x.isId || x.isUnique);
+    this.connectFields = this.model.fields.filter((x) => x.isId || x.isUnique);
+    this.findFields = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.uniqFields = this.model.fields.filter((x) => x.isUnique);
     this.entityFields = this.model.fields;
     this.enumFields = this.model.fields.filter((x) => x.kind == 'enum');

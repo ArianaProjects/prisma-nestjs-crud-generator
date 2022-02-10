@@ -103,7 +103,7 @@ export default class Types {
   private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean) {
     let res: string[] = [];
     if (classTransformer) res.push(this.classTransformerDecorator(f));
-    if (apiProperty) res.push(this.apiPropertyDecorator(f));
+    if (apiProperty) res.push(this.apiPropertyDecorator(f, isOptional));
     if (classValidator) res.push(this.classValidatorDecorator(f, isOptional));
 
     res.push(this.fieldGenerator(f));
@@ -144,7 +144,7 @@ export default class Types {
     return res.join('\n');
   }
 
-  private apiPropertyDecorator(f: DMMF.Field) {
+  private apiPropertyDecorator(f: DMMF.Field, isOptional) {
     let res: string[] = [];
     if (this.parent.isInBlackList(f.name)) return '';
     res.push('@ApiProperty({');
@@ -155,7 +155,7 @@ export default class Types {
     else if (f.kind == 'enum') res.push(`enum: ${f.type},`);
     else if (f.kind == 'unsupported') res.push(`// TODO`);
     // not required
-    if (!f.isRequired) res.push(`required:false,`);
+    if (isOptional || !f.isRequired) res.push(`required:false,`);
     // default
     const d = defaultGenerator(f.name, tsTypes(f.type));
     if (!!d) res.push(`default:${d}`);
