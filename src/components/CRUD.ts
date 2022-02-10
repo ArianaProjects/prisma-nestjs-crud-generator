@@ -42,9 +42,9 @@ export default class CRUD {
     });
     // console.log(serBody);
     const keys = Object.keys(fixedConfig.functions);
-    console.log(this.config);
     keys.map((f) => {
-      if (this.config && this.config.functions && this.config.functions[f] && !this.config.functions[f].disable) {
+      const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
+      if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
         const c = fixedConfig.functions[f];
         //   // controller
         conBody.push(this.controllerFunction(ReqNames[f], c, true, true, true));
@@ -70,7 +70,7 @@ export default class CRUD {
         else p.push(`:${id.name}`);
       });
     res.push(decoratorGenerator(String(type), p.join('/')));
-    if (this.config && this.config.functions && !!this.config.functions[name].additionalDecorator) res.push(this.config.functions[name].additionalDecorator.join('\n'));
+    if (this.config && this.config.functions && this.config.functions[name] && this.config.functions[name].additionalDecorator) res.push(this.config.functions[name].additionalDecorator.join('\n'));
 
     return res.join('\n');
   }
@@ -78,8 +78,8 @@ export default class CRUD {
   private apiOperationDecorator(name: ReqNames) {
     let res: string[] = [];
     res.push('@ApiOperation({');
-    if (this.config && this.config.functions && !!this.config.functions[name].summary) res.push(`summary:"${this.parent.replace(this.config.functions[name].summary)}",`);
-    if (this.config && this.config.functions && !!this.config.functions[name].description) res.push(`description:"${this.parent.replace(this.config.functions[name].description)}",`);
+    if (this.config && this.config.functions && this.config.functions[name] && !!this.config.functions[name].summary) res.push(`summary:"${this.parent.replace(this.config.functions[name].summary)}",`);
+    if (this.config && this.config.functions && this.config.functions[name] && !!this.config.functions[name].description) res.push(`description:"${this.parent.replace(this.config.functions[name].description)}",`);
     res.push('})');
     return res.join('\n');
   }
