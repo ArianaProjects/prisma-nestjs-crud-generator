@@ -36,7 +36,7 @@ export default class Types {
   private generateEntity() {
     let res: string[] = [];
     res.push(this.entityImport());
-    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields));
+    res.push(this.classGenerator(this.parent.namePascal + 'Entity', this.parent.entityFields));
     this.entity = res.join('\n');
   }
 
