@@ -257,7 +257,7 @@ export const fixedConfig: fixedConfigInterface = {
     updateAdminOne: {
       param: 'CONNECT_DTO',
       body: 'UPDATE_DTO',
-      fixedPath: 'admin/',
+      fixedPath: 'admin',
       resp: `ENTITY`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.update({

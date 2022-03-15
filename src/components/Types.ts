@@ -151,7 +151,7 @@ export default class Types {
     // Array
     if (f.isList) res.push('isArray: true,');
     // type
-    if (f.kind == 'object') res.push(`type: ${f.type},`);
+    if (f.kind == 'object') res.push(`type: ()=>${f.type},`);
     else if (f.kind == 'enum') res.push(`enum: ${f.type},`);
     else if (f.kind == 'unsupported') res.push(`// TODO`);
     // not required
