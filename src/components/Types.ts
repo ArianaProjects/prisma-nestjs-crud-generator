@@ -36,7 +36,7 @@ export default class Types {
   private generateEntity() {
     let res: string[] = [];
     res.push(this.entityImport());
-    res.push(this.classGenerator(this.parent.namePascal + 'Entity', this.parent.entityFields));
+    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields, true, false, true, false));
     this.entity = res.join('\n');
   }
 
@@ -106,7 +106,7 @@ export default class Types {
     if (apiProperty) res.push(this.apiPropertyDecorator(f, isOptional));
     if (classValidator) res.push(this.classValidatorDecorator(f, isOptional));
 
-    res.push(this.fieldGenerator(f));
+    res.push(this.fieldGenerator(f, isOptional));
     return res.join('\n');
   }
   // private tsTypesDecorator(f: DMMF.Field) {
@@ -127,11 +127,11 @@ export default class Types {
   //   else return (ret = ret + '\n@IsObject()');
   // }
 
-  private fieldGenerator(f: DMMF.Field) {
+  private fieldGenerator(f: DMMF.Field, isOptional) {
     let res: string[] = [];
     res.push();
     res.push(f.name);
-    if (!f.isRequired) res.push('?');
+    if (isOptional || !f.isRequired || f.kind == 'object') res.push('?');
     res.push(':');
     res.push(tsTypes(f.type));
     if (f.isList) res.push('[]');
@@ -165,6 +165,7 @@ export default class Types {
   }
 
   private classValidatorDecorator(f: DMMF.Field, isOptional: boolean) {
+    console.log(f);
     let res: string[] = [];
     // array
     if (f.isList) res.push('@IsArray()');

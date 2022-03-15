@@ -328,6 +328,11 @@ export default class CRUD {
     let res: string[] = [];
     res.push(
       `import {
+        ${this.parent.namePascal}
+    } from './${this.parent.nameCamel}.entity';`,
+    );
+    res.push(
+      `import {
         Find${this.parent.namePascal}Dto,
         Create${this.parent.namePascal}Dto,
         Update${this.parent.namePascal}Dto,
@@ -364,7 +369,7 @@ export default class CRUD {
         ApiTags,
         ApiUnauthorizedResponse,
       } from '@nestjs/swagger';`,
-      `import { Prisma, ${this.parent.namePascal} } from '@prisma/client';`,
+      "import { Prisma } from '@prisma/client';",
     );
     res.push(
       `import {
@@ -376,6 +381,11 @@ export default class CRUD {
 
   private serviceImport() {
     let res: string[] = [];
+    res.push(
+      `import {
+        ${this.parent.namePascal}
+    } from './${this.parent.nameCamel}.entity';`,
+    );
     res.push(`import { PrismaService } from 'src/shared/services/prisma.service';`);
     res.push(
       `import {
@@ -415,7 +425,7 @@ export default class CRUD {
         ApiTags,
         ApiUnauthorizedResponse,
       } from '@nestjs/swagger';`,
-      `import { Prisma, ${this.parent.namePascal} } from '@prisma/client';`,
+      "import { Prisma } from '@prisma/client';",
     );
 
     let prismaImport = [];
