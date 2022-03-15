@@ -90,7 +90,7 @@ export default class Types {
 
     res.push(importGenerator(importPrisma, '"@prisma/client"'));
     this.parent.objectFields.map((f) => {
-      res.push(importGenerator('{' + this.parent.toPascalCase(f.name) + '}', `"../${this.parent.toCamelCase(f.name)}/${this.parent.toCamelCase(f.name)}.entity"`));
+      res.push(importGenerator('{' + this.parent.toPascalCase(tsTypes(f.type)) + '}', `"../${this.parent.toCamelCase(tsTypes(f.type))}/${this.parent.toCamelCase(tsTypes(f.type))}.entity"`));
     });
     return res.join('\n');
   }

@@ -1,0 +1,47 @@
+generator custom_generator {
+  provider = "node -r ts-node/register src/index.ts"
+  output   = "../gen"
+  config   = "conf.json"
+}
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      Int       @id
+  email   String    @unique
+  name    String?
+  Address Address[]
+}
+
+model Address {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  User      User?     @relation(fields: [userId], references: [id])
+  Tax       Tax[]
+  axId      Int?
+  line1     String
+  line2     String
+  line3     String
+  city      String
+  zipcode   String
+  userId    Int?
+}
+
+model Tax {
+  id        String    @id
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  Address   Address?  @relation(fields: [addressId], references: [id])
+  addressId Int?
+}
