@@ -36,7 +36,7 @@ export default class Types {
   private generateEntity() {
     let res: string[] = [];
     res.push(this.entityImport());
-    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields, true, false, true, false));
+    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields, true, true, true, false));
     this.entity = res.join('\n');
   }
 
@@ -57,7 +57,11 @@ export default class Types {
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { ApiProperty } from '@nestjs/swagger';",
-      "import { Prisma } from '@prisma/client';",
+      `import { Prisma, ${this.parent.enumFields
+        .map((f) => {
+          return f.type;
+        })
+        .join(',')} } from '@prisma/client';`,
     ];
     return res.join('\n');
   }
@@ -83,7 +87,7 @@ export default class Types {
       '{Prisma,' +
       this.parent.enumFields
         .map((f) => {
-          return f.name;
+          return f.type;
         })
         .join(',') +
       '}';
@@ -109,23 +113,6 @@ export default class Types {
     res.push(this.fieldGenerator(f, isOptional));
     return res.join('\n');
   }
-  // private tsTypesDecorator(f: DMMF.Field) {
-  //   let ret = '';
-  //   if (f.isList) ret = ret + '\n@IsArray()';
-
-  //   if (f.isRequired && f.kind != 'object') ret = ret + '\n@IsNotEmpty()';
-  //   else ret = ret + '\n@IsOptional()';
-
-  //   if (f.kind == 'enum') return ret + '\n@IsEnum(' + f.type + ')';
-  //   if (f.kind == 'object') return ret + '\n@ValidateNested()';
-
-  //   if (f.type == 'Int' || f.type == 'BigInt') return (ret = ret + '\n@IsNumber()');
-  //   else if (f.type == 'String' || f.type == 'Text') return (ret = ret + '\n@IsString()');
-  //   else if (f.type == 'DateTime') return (ret = ret + '\n@IsDate()');
-  //   else if (f.type == 'Boolean') return (ret = ret + '\n@IsBoolean()');
-  //   else if (f.type == 'Decimal') return '\n@IsDecimal()';
-  //   else return (ret = ret + '\n@IsObject()');
-  // }
 
   private fieldGenerator(f: DMMF.Field, isOptional) {
     let res: string[] = [];
@@ -140,7 +127,7 @@ export default class Types {
 
   private classTransformerDecorator(f: DMMF.Field) {
     let res: string[] = [];
-    if (this.parent.isInBlackList(f.name)) res.push('@Exclude()');
+    if (this.parent.isExcludeList(f.name)) res.push('@Exclude()');
     return res.join('\n');
   }
 
@@ -173,7 +160,7 @@ export default class Types {
     if (!isOptional && f.isRequired && f.kind != 'object') res.push('@IsNotEmpty()');
     else res.push('@IsOptional()');
     // kind
-    if (f.kind == 'enum') res.push(`@IsEnum( + ${f.type} + )`);
+    if (f.kind == 'enum') res.push(`@IsEnum( ${f.type} )`);
     else if (f.kind == 'object') res.push('@ValidateNested()');
     //types
     if (f.type == 'Int' || f.type == 'BigInt') res.push('@IsNumber()');

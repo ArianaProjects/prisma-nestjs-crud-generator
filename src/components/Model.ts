@@ -19,6 +19,7 @@ export default class Model extends FileGenerator {
   connectFields: DMMF.Field[];
   findFields: DMMF.Field[];
   uniqFields: DMMF.Field[];
+  returnFields: DMMF.Field[];
   entityFields: DMMF.Field[];
   idsNoDefault: DMMF.Field[];
 
@@ -26,6 +27,7 @@ export default class Model extends FileGenerator {
   objectFields: DMMF.Field[];
 
   blackList: string[] = ['deletedAt', 'updatedAt', 'createdAt'];
+  excludeList: string[] = ['deletedAt'];
 
   nameCamel: string;
   namePascal: string;
@@ -47,10 +49,11 @@ export default class Model extends FileGenerator {
 
   public preGenerator() {
     this.idFields = this.model.fields.filter((x) => x.isId);
-    this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
-    this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.returnFields = this.model.fields.filter((x) => !this.isInBlackList(x.name));
     this.connectFields = this.model.fields.filter((x) => x.isId || x.isUnique);
-    this.findFields = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.findFields = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.uniqFields = this.model.fields.filter((x) => x.isUnique);
     this.entityFields = this.model.fields;
     this.enumFields = this.model.fields.filter((x) => x.kind == 'enum');
@@ -86,6 +89,9 @@ export default class Model extends FileGenerator {
 
   public isInBlackList(name: string) {
     return this.blackList.includes(name);
+  }
+  public isExcludeList(name: string) {
+    return this.excludeList.includes(name);
   }
 
   public replace(s: any) {
