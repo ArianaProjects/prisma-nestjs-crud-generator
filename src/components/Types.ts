@@ -42,7 +42,7 @@ export default class Types {
 
   private dtoImport(): string {
     let res: string[] = [
-      `import { Exclude, Expose } from 'class-transformer';`,
+      `import { Exclude, Expose, Type } from 'class-transformer';`,
       `import {
       IsArray,
       IsBoolean,
@@ -68,7 +68,7 @@ export default class Types {
   }
   private entityImport() {
     let res: string[] = [
-      `import { Exclude, Expose } from 'class-transformer';`,
+      `import { Exclude, Expose, Type } from 'class-transformer';`,
       `import {
       IsArray,
       IsBoolean,
