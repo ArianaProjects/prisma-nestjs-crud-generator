@@ -55,7 +55,7 @@ export function tsTypes(type: string | any) {
   else if (type == 'String' || type == 'Text') return 'string';
   else if (type == 'DateTime') return 'Date';
   else if (type == 'Boolean') return 'boolean';
-  else if (type == 'Decimal' || type == 'Float') return 'Prisma.Decimal';
+  else if (type == 'Decimal' || type == 'Float') return 'Decimal';
   else if (type == 'Json') return 'Prisma.JsonValue';
   else return type;
 }
@@ -93,9 +93,7 @@ export function isZipcode(f: DMMF.Field): boolean {
 }
 export function isMoney(f: DMMF.Field): boolean {
   const sl = f.name.toLocaleLowerCase();
-  return (
-    tsTypes(f.type) == 'number' || (tsTypes(f.type) == 'Prisma.Decimal' && sl.includes('cost')) || sl.includes('amount')
-  );
+  return tsTypes(f.type) == 'number' || (tsTypes(f.type) == 'Prisma.Decimal' && sl.includes('cost')) || sl.includes('amount');
 }
 export function isDescription(f: DMMF.Field): boolean {
   const sl = f.name.toLocaleLowerCase();

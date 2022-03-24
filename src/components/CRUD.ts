@@ -326,6 +326,11 @@ export default class CRUD {
 
   private controllerImport() {
     let res: string[] = [];
+    if (this.config.additionalImport) {
+      this.config.additionalImport.map((i) => {
+        res.push(i);
+      });
+    }
     res.push(
       `import {
         ${this.parent.namePascal}
@@ -381,6 +386,11 @@ export default class CRUD {
 
   private serviceImport() {
     let res: string[] = [];
+    if (this.config.additionalImport) {
+      this.config.additionalImport.map((i) => {
+        res.push(i);
+      });
+    }
     res.push(
       `import {
         ${this.parent.namePascal}

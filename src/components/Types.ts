@@ -56,6 +56,7 @@ export default class Types {
       IsJSON,
       ValidateNested,IsString
     } from 'class-validator';`,
+      "import { Decimal } from '@prisma/client/runtime';",
       "import { ApiProperty } from '@nestjs/swagger';",
       `import { Prisma, ${this.parent.enumFields
         .map((f) => {
@@ -82,6 +83,7 @@ export default class Types {
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { ApiProperty } from '@nestjs/swagger';",
+      "import { Decimal } from '@prisma/client/runtime';",
     ];
     const importPrisma =
       '{Prisma,' +
@@ -141,7 +143,9 @@ export default class Types {
     if (f.kind == 'object') res.push(`type: ()=>${f.type},`);
     else if (f.kind == 'enum') res.push(`enum: ${f.type},`);
     else if (f.kind == 'unsupported') res.push(`// TODO`);
+    if (f.type == 'Decimal' || f.type == 'Float') res.push('type: ()=>Decimal,');
     // not required
+
     if (isOptional || !f.isRequired) res.push(`required:false,`);
     // default
     const d = defaultGenerator(f.name, tsTypes(f.type));
