@@ -53,7 +53,7 @@ export default class Types {
       IsNumber,
       IsObject,
       IsOptional,
-      IsJSON,IsInt
+      IsJSON,IsInt,
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { Decimal } from '@prisma/client/runtime';",
@@ -79,7 +79,7 @@ export default class Types {
       IsNumber,
       IsObject,
       IsOptional,
-      IsJSON,IsInt
+      IsJSON,IsInt,
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { ApiProperty } from '@nestjs/swagger';",
