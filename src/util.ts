@@ -50,13 +50,15 @@ export const prettierFormatFormat = (content: string, options: Options = {}) => 
   return format(content, { ...options, parser: 'typescript' });
 };
 
-export function tsTypes(type: string | any) {
+export function tsTypes(type: string | any, entity: boolean = false) {
   if (type == 'Int' || type == 'BigInt') return 'number';
   else if (type == 'String' || type == 'Text') return 'string';
   else if (type == 'DateTime') return 'Date';
   else if (type == 'Boolean') return 'boolean';
-  else if (type == 'Decimal' || type == 'Float') return 'Decimal';
-  else if (type == 'Json') return 'Prisma.JsonValue';
+  else if (type == 'Decimal' || type == 'Float') {
+    if (entity) return 'Decimal | number';
+    else return 'number';
+  } else if (type == 'Json') return 'Prisma.JsonValue';
   else return type;
 }
 

@@ -36,7 +36,7 @@ export default class Types {
   private generateEntity() {
     let res: string[] = [];
     res.push(this.entityImport());
-    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields, true, true, true, false));
+    res.push(this.classGenerator(this.parent.namePascal, this.parent.entityFields, true, true, true, false, true));
     this.entity = res.join('\n');
   }
 
@@ -101,39 +101,39 @@ export default class Types {
     return res.join('\n');
   }
 
-  private classGenerator(name: string, fields: DMMF.Field[], classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean = true) {
-    const body = fields.map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty, isOptional)).join('\n\n');
+  private classGenerator(name: string, fields: DMMF.Field[], classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean = true, entity: boolean = false) {
+    const body = fields.map((f) => this.fieldDecoratorGenerator(f, classValidator, classTransformer, apiProperty, isOptional, entity)).join('\n\n');
     return classGenerator(name, body);
   }
 
-  private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean) {
+  private fieldDecoratorGenerator(f: DMMF.Field, classValidator: boolean = true, classTransformer: boolean = true, apiProperty: boolean = true, isOptional: boolean, entity: boolean = false) {
     let res: string[] = [];
-    if (classTransformer) res.push(this.classTransformerDecorator(f));
-    if (apiProperty) res.push(this.apiPropertyDecorator(f, isOptional));
-    if (classValidator) res.push(this.classValidatorDecorator(f, isOptional));
+    if (classTransformer) res.push(this.classTransformerDecorator(f, entity));
+    if (apiProperty) res.push(this.apiPropertyDecorator(f, isOptional, entity));
+    if (classValidator) res.push(this.classValidatorDecorator(f, isOptional, entity));
 
-    res.push(this.fieldGenerator(f, isOptional));
+    res.push(this.fieldGenerator(f, isOptional, entity));
     return res.join('\n');
   }
 
-  private fieldGenerator(f: DMMF.Field, isOptional) {
+  private fieldGenerator(f: DMMF.Field, isOptional, entity: boolean = false) {
     let res: string[] = [];
     res.push();
     res.push(f.name);
     if (isOptional || !f.isRequired || f.kind == 'object') res.push('?');
     res.push(':');
-    res.push(tsTypes(f.type));
+    res.push(tsTypes(f.type, entity));
     if (f.isList) res.push('[]');
     return res.join(' ');
   }
 
-  private classTransformerDecorator(f: DMMF.Field) {
+  private classTransformerDecorator(f: DMMF.Field, entity: boolean = false) {
     let res: string[] = [];
     if (this.parent.isExcludeList(f.name)) res.push('@Exclude()');
     return res.join('\n');
   }
 
-  private apiPropertyDecorator(f: DMMF.Field, isOptional) {
+  private apiPropertyDecorator(f: DMMF.Field, isOptional, entity: boolean = false) {
     let res: string[] = [];
     if (this.parent.isInBlackList(f.name)) return '';
     res.push('@ApiProperty({');
@@ -148,14 +148,14 @@ export default class Types {
 
     if (isOptional || !f.isRequired) res.push(`required:false,`);
     // default
-    const d = defaultGenerator(f.name, tsTypes(f.type));
+    const d = defaultGenerator(f.name, tsTypes(f.type, entity));
     if (!!d) res.push(`default:${d}`);
 
     res.push('})');
     return res.join('\n');
   }
 
-  private classValidatorDecorator(f: DMMF.Field, isOptional: boolean) {
+  private classValidatorDecorator(f: DMMF.Field, isOptional: boolean, entity: boolean = false) {
     console.log(f);
     let res: string[] = [];
     // array
