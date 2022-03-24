@@ -53,7 +53,7 @@ export default class Types {
       IsNumber,
       IsObject,
       IsOptional,
-      IsJSON,
+      IsJSON,IsInt
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { Decimal } from '@prisma/client/runtime';",
@@ -79,7 +79,7 @@ export default class Types {
       IsNumber,
       IsObject,
       IsOptional,
-      IsJSON,
+      IsJSON,IsInt
       ValidateNested,IsString
     } from 'class-validator';`,
       "import { ApiProperty } from '@nestjs/swagger';",
@@ -167,8 +167,10 @@ export default class Types {
     if (f.kind == 'enum') res.push(`@IsEnum( ${f.type} )`);
     else if (f.kind == 'object') res.push('@ValidateNested()');
     //types
-    if (f.type == 'Int' || f.type == 'BigInt') res.push('@IsNumber()');
-    else if (f.type == 'String' || f.type == 'Text') res.push('@IsString()');
+    if (f.type == 'Int' || f.type == 'BigInt') {
+      res.push('@IsInt()');
+      if (f.isId) res.push('@Type(() => Number)');
+    } else if (f.type == 'String' || f.type == 'Text') res.push('@IsString()');
     else if (f.type == 'DateTime') res.push('@IsDate()');
     else if (f.type == 'Boolean') res.push('@IsBoolean()');
     else if (f.type == 'Decimal' || f.type == 'Float') res.push('@IsDecimal()');
