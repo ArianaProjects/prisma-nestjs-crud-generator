@@ -59,7 +59,7 @@ export class PrismaGenerator {
   }
 
   run = async (): Promise<void> => {
-    console.log(this.options.generator);
+    // console.log(this.options.generator);
     let o: OptionInterface = {
       fullPath: this.options.generator.output.value || './gen',
       configPath: this.options.generator.config['config'] || undefined,

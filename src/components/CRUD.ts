@@ -4,7 +4,7 @@ import { apiResponseInterface, functionFixConfig, generalConfig, ReqNames, ReqTy
 import { classGenerator, constructorGenerator, decoratorGenerator, functionGenerator, functionPromiseGenerator, parameterGenerator, parameterPrivateGenerator } from '../templates';
 import Model from './Model';
 import fs from 'fs';
-import { fixedConfig, UserDecoratorParam, UserParamService } from './const';
+import { fixedConfig, UserDecoratorParam, UserParam, UserParamService } from './const';
 import { prettierFormatFormat, tsTypes } from '../util';
 
 export default class CRUD {
@@ -59,6 +59,7 @@ export default class CRUD {
     const keys = Object.keys(fixedConfig.functions);
     keys.map((f, i) => {
       const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
+      console.log(f, i);
       if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
         if (i == 11) {
           conBody.push('\n\n//\t------------------ ADMIN -------------------\n');
@@ -160,6 +161,7 @@ export default class CRUD {
 
     if (access && !option.admin) {
       res.push(UserDecoratorParam);
+      res.push(',');
     }
 
     // ApiQuery
@@ -194,9 +196,12 @@ export default class CRUD {
     return res.join(' ');
   }
 
-  private paramControllerToService(option: functionFixConfig) {
+  private paramControllerToService(option: functionFixConfig, access: boolean = false) {
     let res: string[] = [];
-
+    if (access && !option.admin) {
+      res.push(UserParam);
+      res.push(',');
+    }
     // ApiQuery
     if (option.query) {
       res.push('query');
@@ -220,11 +225,18 @@ export default class CRUD {
       res.push('body ');
       res.push(',');
     }
+    // console.log(access, !option.admin, res);
+
     return res.join(' ');
   }
 
-  private paramService(option: functionFixConfig) {
+  private paramService(option: functionFixConfig, access: boolean = false) {
     let res: string[] = [];
+
+    if (access && !option.admin) {
+      res.push(UserParamService);
+      res.push(',');
+    }
 
     // ApiQuery
     if (option.query) {
@@ -280,8 +292,8 @@ export default class CRUD {
     let res: string[] = [];
     const ENTITY = conf.responses.filter((r) => r.type == 'ENTITY').length >= 1;
     const ENTITYArray = conf.responses.filter((r) => r.type == '[ENTITY]').length >= 1;
-    if (ENTITY || ENTITYArray) res.push(`return plainToInstance(${this.parent.namePascal}, (await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf)})))`);
-    else res.push(`return await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf)})`);
+    if (ENTITY || ENTITYArray) res.push(`return plainToInstance(${this.parent.namePascal}, (await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf, this.config.access)})))`);
+    else res.push(`return await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf, this.config.access)})`);
     return res.join('\n');
   }
 
@@ -295,13 +307,13 @@ export default class CRUD {
     if (apiResp) res.push(this.allApiResponseDecorators(conf));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
     if (optionalConf && optionalConf.additionalDecorator) optionalConf.additionalDecorator.map((a) => res.push(a));
-    res.push(functionPromiseGenerator(ReqNames[name], this.paramController(conf), this.parent.replace(conf.resp), this.parent.replace(this.controllerFunctionBody(name, conf))));
+    res.push(functionPromiseGenerator(ReqNames[name], this.paramController(conf, this.config.access), this.parent.replace(conf.resp), this.parent.replace(this.controllerFunctionBody(name, conf))));
     return res.join('\n');
   }
 
   private serviceFunction(name: ReqNames, conf: functionFixConfig) {
     let res: string[] = [];
-    res.push(functionPromiseGenerator(ReqNames[name], this.parent.replace(this.paramService(conf)), this.parent.replace(conf.resp), this.parent.replace(this.serviceFunctionBody(conf, name))));
+    res.push(functionPromiseGenerator(ReqNames[name], this.parent.replace(this.paramService(conf, this.config.access)), this.parent.replace(conf.resp), this.parent.replace(this.serviceFunctionBody(conf, name))));
     return res.join('\n\n');
   }
 
@@ -372,6 +384,10 @@ export default class CRUD {
         Create${this.parent.namePascal}Dto,
         Update${this.parent.namePascal}Dto,
         Connect${this.parent.namePascal}Dto,
+        Find${this.parent.namePascal}AdminDto,
+        Create${this.parent.namePascal}AdminDto,
+        Update${this.parent.namePascal}AdminDto,
+        Connect${this.parent.namePascal}AdminDto,
     } from './${this.parent.nameCamel}.dto';`,
     );
     res.push(
@@ -410,6 +426,7 @@ export default class CRUD {
     );
     res.push(`import { UserGeneralDto } from 'src/shared/dtos/user.dto';`);
     res.push(`import { plainToInstance } from 'class-transformer';`);
+    res.push(`import { User as UserDecorator } from 'src/shared/decorators/user.decorator';    `);
     res.push(
       `import {
         ${this.parent.namePascal}Service
@@ -433,12 +450,17 @@ export default class CRUD {
     res.push(`import { plainToInstance } from 'class-transformer';`);
     res.push(`import { PrismaService } from 'src/shared/services/prisma.service';`);
     res.push(`import { UserGeneralDto } from 'src/shared/dtos/user.dto';`);
+    res.push(`import { User as UserDecorator } from 'src/shared/decorators/user.decorator';    `);
     res.push(
       `import {
         Find${this.parent.namePascal}Dto,
         Create${this.parent.namePascal}Dto,
         Update${this.parent.namePascal}Dto,
         Connect${this.parent.namePascal}Dto,
+        Find${this.parent.namePascal}AdminDto,
+        Create${this.parent.namePascal}AdminDto,
+        Update${this.parent.namePascal}AdminDto,
+        Connect${this.parent.namePascal}AdminDto,
     } from './${this.parent.nameCamel}.dto';`,
     );
     res.push(

@@ -162,7 +162,7 @@ export default class Types {
   }
 
   private classValidatorDecorator(f: DMMF.Field, isOptional: boolean, entity: boolean = false) {
-    console.log(f);
+    // console.log(f);
     let res: string[] = [];
     // array
     if (f.isList) res.push('@IsArray()');
