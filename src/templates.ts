@@ -46,13 +46,15 @@ export function fieldGeneratorGeneral(name: any, type: any, decorator: string) {
 export function functionGenerator(name: string, param: string, ret: string, body: string) {
   return `private ${name}(${param}): ${ret}{
      ${body}
-   }`;
+   }
+   `;
 }
 
 export function asyncFunctionGenerator(name: string, param: string, ret: string, body: string) {
   return `async ${name}(${param}): ${ret}{
      ${body}
-   }`;
+   }
+   `;
 }
 
 export function functionPromiseGenerator(name: string, param: string, retType: string, body: string) {

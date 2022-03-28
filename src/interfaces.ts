@@ -22,12 +22,18 @@ export enum ReqNames {
   'updateOne' = 'updateOne',
   'updateMany' = 'updateMany',
   'updateAll' = 'updateAll',
-  'updateAdminOne' = 'updateAdminOne',
-  'updateAdminMany' = 'updateAdminMany',
-  'updateAdminAll' = 'updateAdminAll',
   'deleteOne' = 'deleteOne',
   'deleteMany' = 'deleteMany',
   'deleteAll' = 'deleteAll',
+  'existAdmin' = 'existAdmin',
+  'findUniqAdmin' = 'findUniqAdmin',
+  'findAdminMany' = 'findAdminMany',
+  'getAllAdmin' = 'getAllAdmin',
+  'createAdminOne' = 'createAdminOne',
+  'createAdminMany' = 'createAdminMany',
+  'updateAdminOne' = 'updateAdminOne',
+  'updateAdminMany' = 'updateAdminMany',
+  'updateAdminAll' = 'updateAdminAll',
   'deleteAdminOne' = 'deleteAdminOne',
   'deleteAdminMany' = 'deleteAdminMany',
   'deleteAdminAll' = 'deleteAdminAll',
@@ -43,12 +49,18 @@ export enum ReqNamesType {
   'updateOne' = 'PATCH',
   'updateMany' = 'PATCH',
   'updateAll' = 'PATCH',
-  'updateAdminOne' = 'PUT',
-  'updateAdminMany' = 'PUT',
-  'updateAdminAll' = 'PUT',
   'deleteOne' = 'DELETE',
   'deleteMany' = 'DELETE',
   'deleteAll' = 'DELETE',
+  'existAdmin' = 'GET',
+  'findUniqAdmin' = 'GET',
+  'findAdminMany' = 'GET',
+  'getAllAdmin' = 'GET',
+  'createAdminOne' = 'POST',
+  'createAdminMany' = 'POST',
+  'updateAdminOne' = 'PUT',
+  'updateAdminMany' = 'PUT',
+  'updateAdminAll' = 'PUT',
   'deleteAdminOne' = 'DELETE',
   'deleteAdminMany' = 'DELETE',
   'deleteAdminAll' = 'DELETE',
@@ -56,6 +68,8 @@ export enum ReqNamesType {
 
 export interface generalConfig {
   additionalImport?: string[];
+  access?: boolean;
+  accessBlackList?: string[];
   functions: { [name in string]?: functionConfig };
 }
 export interface fixedConfigInterface {
@@ -68,6 +82,7 @@ export interface functionConfig {
   additionalDecorator?: string[];
 }
 export interface functionFixConfig {
+  info: string;
   param?: string;
   paramArray?: boolean;
   body?: string;
@@ -75,9 +90,11 @@ export interface functionFixConfig {
   query?: string;
   header?: string;
   service: string;
+  serviceAccess: string;
   resp: string;
   responses?: apiResponseInterface[];
   fixedPath: string;
+  admin?: boolean;
 }
 export interface apiResponseInterface {
   status: string | number;

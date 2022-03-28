@@ -1,4 +1,8 @@
 {
+    "access": true,
+    "accessBlackList": [
+        "User"
+    ],
     "functions": {
         "exist": {
             "disable": true

@@ -18,6 +18,10 @@ export default class Model extends FileGenerator {
   updateFields: DMMF.Field[];
   connectFields: DMMF.Field[];
   findFields: DMMF.Field[];
+  createFieldsAdmin: DMMF.Field[];
+  updateFieldsAdmin: DMMF.Field[];
+  findFieldsAdmin: DMMF.Field[];
+  connectFieldsAdmin: DMMF.Field[];
   uniqFields: DMMF.Field[];
   returnFields: DMMF.Field[];
   entityFields: DMMF.Field[];
@@ -49,11 +53,18 @@ export default class Model extends FileGenerator {
 
   public preGenerator() {
     this.idFields = this.model.fields.filter((x) => x.isId);
+
+    this.createFieldsAdmin = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.updateFieldsAdmin = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.findFieldsAdmin = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.connectFieldsAdmin = this.model.fields.filter((x) => x.isId || x.isUnique);
+
     this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
-    this.returnFields = this.model.fields.filter((x) => !this.isInBlackList(x.name));
-    this.connectFields = this.model.fields.filter((x) => x.isId || x.isUnique);
     this.findFields = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
+    this.connectFields = this.model.fields.filter((x) => x.isId || x.isUnique);
+
+    this.returnFields = this.model.fields.filter((x) => !this.isInBlackList(x.name));
     this.uniqFields = this.model.fields.filter((x) => x.isUnique);
     this.entityFields = this.model.fields;
     this.enumFields = this.model.fields.filter((x) => x.kind == 'enum');
@@ -103,7 +114,11 @@ export default class Model extends FileGenerator {
         .replace('CREATE_DTO', `Create${this.namePascal}Dto`)
         .replace('CONNECT_DTO', `Connect${this.namePascal}Dto`)
         .replace('FIND_DTO', `Find${this.namePascal}Dto`)
-        .replace('UPDATE_DTO', `Update${this.namePascal}Dto`);
+        .replace('UPDATE_DTO', `Update${this.namePascal}Dto`)
+        .replace('CREATE_ADMIN_DTO', `Create${this.namePascal}AdminDto`)
+        .replace('CONNECT_ADMIN_DTO', `Connect${this.namePascal}AdminDto`)
+        .replace('FIND_ADMIN_DTO', `Find${this.namePascal}AdminDto`)
+        .replace('UPDATE_ADMIN_DTO', `Update${this.namePascal}AdminDto`);
     return s;
   }
 }

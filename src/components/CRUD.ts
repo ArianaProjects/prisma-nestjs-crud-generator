@@ -4,7 +4,7 @@ import { apiResponseInterface, functionFixConfig, generalConfig, ReqNames, ReqTy
 import { classGenerator, constructorGenerator, decoratorGenerator, functionGenerator, functionPromiseGenerator, parameterGenerator, parameterPrivateGenerator } from '../templates';
 import Model from './Model';
 import fs from 'fs';
-import { fixedConfig } from './const';
+import { fixedConfig, UserDecoratorParam, UserParamService } from './const';
 import { prettierFormatFormat, tsTypes } from '../util';
 
 export default class CRUD {
@@ -29,6 +29,21 @@ export default class CRUD {
     let serBody: string[] = [];
     conBody.push(this.controllerClassConstructor());
     serBody.push(this.serviceClassConstructor());
+    if (this.config.access)
+      serBody.push(
+        functionPromiseGenerator(
+          'hasAccess',
+          `${UserParamService}, ${this.parent.replace('query: FIND_DTO')}`,
+          'Boolean',
+          this.parent.replace(`
+          const ret = await this.prismaService.NAME_CAMEL.findMany({
+            where: { ...query, userId: user.id },
+          });
+          return ret.length > 0;
+        `),
+        ),
+      );
+
     this.parent.idsNoDefault.map((id) => {
       serBody.push(
         functionGenerator(
@@ -42,13 +57,17 @@ export default class CRUD {
     });
     // console.log(serBody);
     const keys = Object.keys(fixedConfig.functions);
-    keys.map((f) => {
+    keys.map((f, i) => {
       const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
       if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
+        if (i == 11) {
+          conBody.push('\n\n//\t------------------ ADMIN -------------------\n');
+          serBody.push('\n\n//\t------------------ ADMIN -------------------\n');
+        }
         const c = fixedConfig.functions[f];
-        //   // controller
+        // controller
         conBody.push(this.controllerFunction(ReqNames[f], c, true, true, true));
-        //   // service
+        // service
         serBody.push(this.serviceFunction(ReqNames[f], c));
       }
     });
@@ -84,15 +103,18 @@ export default class CRUD {
     return res.join('\n');
   }
 
-  private allApiResponseDecorators(responses?: apiResponseInterface[]) {
-    return responses.map((r) => this.apiResponseDecorator(r)).join('\n');
+  private allApiResponseDecorators(conf: functionFixConfig) {
+    return conf.responses.map((r) => this.apiResponseDecorator(r, conf)).join('\n');
   }
 
-  private apiResponseDecorator(option: apiResponseInterface) {
+  private apiResponseDecorator(option: apiResponseInterface, conf: functionFixConfig) {
     let res: string[] = [];
     res.push('@ApiResponse({');
     res.push(`status:${this.parent.replace(option.status)},`);
     if (option.description) res.push(`description:"${this.parent.replace(option.description)}",`);
+    else res.push(`description:"${this.parent.replace(conf.info)}",`);
+    if (option.description) res.push(`summary:"${this.parent.replace(option.description)}",`);
+    else res.push(`summary:"${this.parent.replace(conf.info)}",`);
     if (option.type) res.push(`type:${this.parent.replace(option.type)},`);
     res.push('})');
     return res.join('\n');
@@ -133,8 +155,12 @@ export default class CRUD {
     return res.join('\n');
   }
 
-  private paramController(option: functionFixConfig) {
+  private paramController(option: functionFixConfig, access: boolean = false) {
     let res: string[] = [];
+
+    if (access && !option.admin) {
+      res.push(UserDecoratorParam);
+    }
 
     // ApiQuery
     if (option.query) {
@@ -244,7 +270,7 @@ export default class CRUD {
     return res.join('\n');
   }
   private controllerFunctionComment(name: ReqNames) {
-    let res: string[] = [];
+    let res: string[] = ['\n'];
     res.push('/********************************************************************');
     res.push('*                            ' + ReqNames[name]);
     res.push('   ********************************************************************/');
@@ -252,7 +278,10 @@ export default class CRUD {
   }
   private controllerFunctionBody(name: ReqNames, conf: functionFixConfig) {
     let res: string[] = [];
-    res.push(`return await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf)})`);
+    const ENTITY = conf.responses.filter((r) => r.type == 'ENTITY').length >= 1;
+    const ENTITYArray = conf.responses.filter((r) => r.type == '[ENTITY]').length >= 1;
+    if (ENTITY || ENTITYArray) res.push(`return plainToInstance(${this.parent.namePascal}, (await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf)})))`);
+    else res.push(`return await this.${this.parent.nameCamel}Service.${name}(${this.paramControllerToService(conf)})`);
     return res.join('\n');
   }
 
@@ -263,7 +292,7 @@ export default class CRUD {
     res.push(this.controllerFunctionComment(name));
     res.push(this.functionControllerDecorator(ReqType[ReqNamesType[name]], conf, name)); // TODO param
     if (apiOperator) res.push(this.apiOperationDecorator(name));
-    if (apiResp) res.push(this.allApiResponseDecorators(conf.responses));
+    if (apiResp) res.push(this.allApiResponseDecorators(conf));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
     if (optionalConf && optionalConf.additionalDecorator) optionalConf.additionalDecorator.map((a) => res.push(a));
     res.push(functionPromiseGenerator(ReqNames[name], this.paramController(conf), this.parent.replace(conf.resp), this.parent.replace(this.controllerFunctionBody(name, conf))));
@@ -272,16 +301,17 @@ export default class CRUD {
 
   private serviceFunction(name: ReqNames, conf: functionFixConfig) {
     let res: string[] = [];
-    res.push(functionPromiseGenerator(ReqNames[name], this.parent.replace(this.paramService(conf)), this.parent.replace(conf.resp), this.parent.replace(this.serviceFunctionBody(conf))));
-    return res.join('\n');
+    res.push(functionPromiseGenerator(ReqNames[name], this.parent.replace(this.paramService(conf)), this.parent.replace(conf.resp), this.parent.replace(this.serviceFunctionBody(conf, name))));
+    return res.join('\n\n');
   }
 
-  private serviceFunctionBody(conf: functionFixConfig) {
+  private serviceFunctionBody(conf: functionFixConfig, name: ReqNames) {
     let res: string[] = [];
-    let fix = conf.service;
+    const service = this.config.access && !this.config.accessBlackList.includes(name) ? conf.serviceAccess : conf.service;
+    let fix = service;
     if (this.parent.idsNoDefault.length > 0) {
       if (fix.includes('createMany') && conf.bodyArray) {
-        fix = conf.service.replace(
+        fix = service.replace(
           '...b ',
           `
         ${this.parent.idsNoDefault
@@ -294,7 +324,7 @@ export default class CRUD {
         );
         // console.log(fix);
       } else if (fix.includes('create') && !conf.bodyArray) {
-        fix = conf.service.replace(
+        fix = service.replace(
           '...body',
           `
         ${this.parent.idsNoDefault
@@ -356,7 +386,9 @@ export default class CRUD {
         Param,
         Post,
         Patch,
-        Put,
+        Put,  UnauthorizedException,
+        ForbiddenException,
+        ConflictException,
         Req,Injectable
       } from '@nestjs/common';
       import {
@@ -376,6 +408,8 @@ export default class CRUD {
       } from '@nestjs/swagger';`,
       "import { Prisma } from '@prisma/client';",
     );
+    res.push(`import { UserGeneralDto } from 'src/shared/dtos/user.dto';`);
+    res.push(`import { plainToInstance } from 'class-transformer';`);
     res.push(
       `import {
         ${this.parent.namePascal}Service
@@ -396,7 +430,9 @@ export default class CRUD {
         ${this.parent.namePascal}
     } from './${this.parent.nameCamel}.entity';`,
     );
+    res.push(`import { plainToInstance } from 'class-transformer';`);
     res.push(`import { PrismaService } from 'src/shared/services/prisma.service';`);
+    res.push(`import { UserGeneralDto } from 'src/shared/dtos/user.dto';`);
     res.push(
       `import {
         Find${this.parent.namePascal}Dto,
@@ -417,7 +453,9 @@ export default class CRUD {
         Param,
         Post,
         Patch,
-        Put,
+        Put,  UnauthorizedException,
+        ForbiddenException,
+        ConflictException,
         Req,Injectable
       } from '@nestjs/common';
       import {
