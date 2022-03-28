@@ -59,7 +59,7 @@ export default class CRUD {
     const keys = Object.keys(fixedConfig.functions);
     keys.map((f, i) => {
       const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
-      console.log(f, i);
+      // console.log(f, i);
       if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
         if (i == 11) {
           conBody.push('\n\n//\t------------------ ADMIN -------------------\n');
@@ -70,6 +70,7 @@ export default class CRUD {
         conBody.push(this.controllerFunction(ReqNames[f], c, true, true, true));
         // service
         serBody.push(this.serviceFunction(ReqNames[f], c));
+        serBody.push('\n');
       }
     });
 
@@ -95,11 +96,12 @@ export default class CRUD {
     return res.join('\n');
   }
 
-  private apiOperationDecorator(name: ReqNames) {
+  private apiOperationDecorator(name: ReqNames, conf: functionFixConfig) {
     let res: string[] = [];
     res.push('@ApiOperation({');
     if (this.config && this.config.functions && this.config.functions[name] && !!this.config.functions[name].summary) res.push(`summary:"${this.parent.replace(this.config.functions[name].summary)}",`);
     if (this.config && this.config.functions && this.config.functions[name] && !!this.config.functions[name].description) res.push(`description:"${this.parent.replace(this.config.functions[name].description)}",`);
+    res.push(`summary:"${this.parent.replace(conf.info)}",`);
     res.push('})');
     return res.join('\n');
   }
@@ -113,9 +115,6 @@ export default class CRUD {
     res.push('@ApiResponse({');
     res.push(`status:${this.parent.replace(option.status)},`);
     if (option.description) res.push(`description:"${this.parent.replace(option.description)}",`);
-    else res.push(`description:"${this.parent.replace(conf.info)}",`);
-    if (option.description) res.push(`summary:"${this.parent.replace(option.description)}",`);
-    else res.push(`summary:"${this.parent.replace(conf.info)}",`);
     if (option.type) res.push(`type:${this.parent.replace(option.type)},`);
     res.push('})');
     return res.join('\n');
@@ -303,7 +302,7 @@ export default class CRUD {
     const optionalConf = this.config && this.config.functions && this.config.functions[name];
     res.push(this.controllerFunctionComment(name));
     res.push(this.functionControllerDecorator(ReqType[ReqNamesType[name]], conf, name)); // TODO param
-    if (apiOperator) res.push(this.apiOperationDecorator(name));
+    if (apiOperator) res.push(this.apiOperationDecorator(name, conf));
     if (apiResp) res.push(this.allApiResponseDecorators(conf));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
     if (optionalConf && optionalConf.additionalDecorator) optionalConf.additionalDecorator.map((a) => res.push(a));

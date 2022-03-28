@@ -288,7 +288,23 @@ export const fixedConfig: fixedConfigInterface = {
       fixedPath: 'many',
       resp: `Number`,
       info: '',
-      serviceAccess: ``,
+      serviceAccess: `
+      param.map((p) => {
+        if (!this.hasAccess(user, p)) {
+          throw new UnauthorizedException();
+        }
+      });
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
+        where: {
+          OR: [
+            ...param.map((p) => {
+              return { ...p };
+            }),
+          ],
+        },
+        data: { deletedAt: new Date() },
+      });
+      return ret.count;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
