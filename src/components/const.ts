@@ -10,7 +10,7 @@ export const fixedConfig: fixedConfigInterface = {
       query: 'FIND_DTO',
       fixedPath: 'exist',
       resp: `Boolean`,
-      info: '',
+      info: 'Exist ENTITY with filter as Query',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...query, userId: user.id, deletedAt: null },
@@ -33,7 +33,7 @@ export const fixedConfig: fixedConfigInterface = {
       query: 'FIND_DTO',
       fixedPath: 'many',
       resp: `ENTITY[]`,
-      info: '',
+      info: 'Find many ENTITY with filter as Query',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...query, userId: user.id, deletedAt: null },
@@ -55,7 +55,7 @@ export const fixedConfig: fixedConfigInterface = {
     getAll: {
       fixedPath: '',
       resp: `ENTITY[]`,
-      info: '',
+      info: 'get All ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: {
@@ -83,7 +83,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_DTO',
       fixedPath: '',
       resp: `ENTITY`,
-      info: '',
+      info: 'find unique ENTITY ',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...param, userId: user.id, deletedAt: null },
@@ -106,7 +106,7 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'CREATE_DTO',
       fixedPath: '',
       resp: `ENTITY`,
-      info: '',
+      info: 'create ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.create({
         data: { ...body, userId: user.id },
@@ -130,7 +130,7 @@ export const fixedConfig: fixedConfigInterface = {
       bodyArray: true,
       fixedPath: 'many',
       resp: `Number`,
-      info: '',
+      info: 'create many ENTITY',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.createMany({
         data: [
@@ -163,7 +163,7 @@ export const fixedConfig: fixedConfigInterface = {
       paramArray: true,
       fixedPath: 'many',
       resp: `Number`,
-      info: '',
+      info: 'update many ENTITY',
       serviceAccess: `
       param.map((p) => {
         if (!this.hasAccess(user, p)) {
@@ -214,7 +214,7 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'UPDATE_DTO',
       fixedPath: '',
       resp: `Number`,
-      info: '',
+      info: 'update all ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
@@ -250,7 +250,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_DTO',
       fixedPath: '',
       resp: `ENTITY`,
-      info: '',
+      info: 'update unique ENTITY',
       serviceAccess: `
       if (!this.hasAccess(user, param)) {
         throw new UnauthorizedException();
@@ -287,7 +287,7 @@ export const fixedConfig: fixedConfigInterface = {
       paramArray: true,
       fixedPath: 'many',
       resp: `Number`,
-      info: '',
+      info: 'Delete many ENTITY',
       serviceAccess: `
       param.map((p) => {
         if (!this.hasAccess(user, p)) {
@@ -336,7 +336,7 @@ export const fixedConfig: fixedConfigInterface = {
     deleteAll: {
       fixedPath: '',
       resp: `Number`,
-      info: '',
+      info: 'delete all ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { userId: user.id },
@@ -369,7 +369,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_DTO',
       fixedPath: '',
       resp: `ENTITY`,
-      info: '',
+      info: 'delete one ENTITY',
       serviceAccess: `
       if (!this.hasAccess(user, param)) {
         throw new UnauthorizedException();
@@ -406,7 +406,7 @@ export const fixedConfig: fixedConfigInterface = {
       query: 'FIND_ADMIN_DTO',
       fixedPath: 'admin/exist',
       resp: `Boolean`,
-      info: '',
+      info: 'ADMIN - Exist ENTITY with filter as Query',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...query },
@@ -430,7 +430,7 @@ export const fixedConfig: fixedConfigInterface = {
       query: 'FIND_ADMIN_DTO',
       fixedPath: 'admin/many',
       resp: `ENTITY[]`,
-      info: '',
+      info: 'ADMIN - find many ENTITY',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...query },
@@ -453,7 +453,7 @@ export const fixedConfig: fixedConfigInterface = {
       admin: true,
       fixedPath: 'admin',
       resp: `ENTITY[]`,
-      info: '',
+      info: 'ADMIN - get all ',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany();
       return ret;`,
@@ -473,7 +473,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_ADMIN_DTO',
       fixedPath: 'admin',
       resp: `ENTITY`,
-      info: '',
+      info: 'ADMIN - get unique ENTITY',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.findUnique({
         where: { ...param },
@@ -497,7 +497,7 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'CREATE_ADMIN_DTO',
       fixedPath: 'admin',
       resp: `ENTITY`,
-      info: '',
+      info: 'ADMIN - create one ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.create({
         data: { ...body },
@@ -522,7 +522,7 @@ export const fixedConfig: fixedConfigInterface = {
       bodyArray: true,
       fixedPath: 'admin/many',
       resp: `Number`,
-      info: '',
+      info: 'ADMIN - create many ENTITY',
       serviceAccess: `    
       const ret = await this.prismaService.NAME_CAMEL.createMany({
         data: [
@@ -556,7 +556,7 @@ export const fixedConfig: fixedConfigInterface = {
       paramArray: true,
       fixedPath: 'admin/many',
       resp: `Number`,
-      info: '',
+      info: 'ADMIN - update Many ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
@@ -602,7 +602,7 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'UPDATE_ADMIN_DTO',
       fixedPath: 'admin',
       resp: `Number`,
-      info: '',
+      info: 'ADMIN - update all ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         data: { ...body },
@@ -636,7 +636,7 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'UPDATE_ADMIN_DTO',
       fixedPath: 'admin',
       resp: `ENTITY`,
-      info: '',
+      info: 'ADMIN - update unique ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.update({
         where: { ...param },
@@ -671,7 +671,7 @@ export const fixedConfig: fixedConfigInterface = {
       paramArray: true,
       fixedPath: 'admin/many',
       resp: `Number`,
-      info: '',
+      info: 'ADMIN - delete many ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany({
         where: {
@@ -714,7 +714,7 @@ export const fixedConfig: fixedConfigInterface = {
       admin: true,
       fixedPath: 'admin',
       resp: `Number`,
-      info: '',
+      info: 'ADMIN - delete All ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.deleteMany();
       return ret.count;`,
@@ -743,7 +743,7 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_ADMIN_DTO',
       fixedPath: 'admin',
       resp: `ENTITY`,
-      info: '',
+      info: 'ADMIN - delete unique ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.delete({
         where: {
