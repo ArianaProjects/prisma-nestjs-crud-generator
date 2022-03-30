@@ -109,7 +109,7 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'create ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.create({
-        data: { ...body,userId:user.id },
+        data: { ...body, ...this.hasAccessData(user) },
       });
       return ret;`,
       service: `
@@ -135,7 +135,7 @@ export const fixedConfig: fixedConfigInterface = {
       const ret = await this.prismaService.NAME_CAMEL.createMany({
         data: [
           ...body.map((b) => {
-            return { ...b, userId:user.id };
+            return { ...b, ...this.hasAccessData(user) };
           }),
         ],
       });
