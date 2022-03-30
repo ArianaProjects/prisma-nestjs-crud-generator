@@ -93,7 +93,7 @@ export const fixedConfig: fixedConfigInterface = {
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: { ...param , ...this.isNotDeletedData()}
       });
-      return ret;`,
+      return ret[0];`,
       responses: [
         {
           description: 'NAME_CAMEL',
