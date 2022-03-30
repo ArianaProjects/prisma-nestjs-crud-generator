@@ -1,6 +1,6 @@
 {
 	"name": "@arianaprojects/prisma-nestjs-crud-generator",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"description": "code generator from Prisma schema",
 	"main": "dist/index.js",
 	"license": "Apache License 2.0",
