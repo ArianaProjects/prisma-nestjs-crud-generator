@@ -135,7 +135,7 @@ export const fixedConfig: fixedConfigInterface = {
       const ret = await this.prismaService.NAME_CAMEL.createMany({
         data: [
           ...body.map((b) => {
-            return { ...b, ...this.hasAccessData(user) };
+            return { ...b , ...this.hasAccessData(user) };
           }),
         ],
       });

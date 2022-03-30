@@ -366,8 +366,7 @@ export default class CRUD {
             return `${id.name}:this.${id.name}Gen()`;
           })
           .join(`,`)}
-         , ...b
-        `,
+         , ...b `,
         );
         // console.log(fix);
       } else if (fix.includes('create') && !conf.bodyArray) {
