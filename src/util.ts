@@ -47,6 +47,7 @@ export const prettierFormat = (content: string) => {
   });
 };
 export const prettierFormatFormat = (content: string, options: Options = {}) => {
+  // return content;
   return format(content, { ...options, parser: 'typescript' });
 };
 

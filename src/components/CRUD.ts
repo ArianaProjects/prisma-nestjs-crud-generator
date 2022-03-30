@@ -29,7 +29,7 @@ export default class CRUD {
     let serBody: string[] = [];
     conBody.push(this.controllerClassConstructor());
     serBody.push(this.serviceClassConstructor());
-    if (this.config.access)
+    if (this.config.access && !this.config.accessBlackList.includes(this.parent.namePascal)) {
       serBody.push(
         functionPromiseGenerator(
           'hasAccess',
@@ -37,13 +37,48 @@ export default class CRUD {
           'Boolean',
           this.parent.replace(`
           const ret = await this.prismaService.NAME_CAMEL.findMany({
-            where: { ...query, userId: user.id },
+            where: { ...query, userId: user.id, deletedAt: null },
           });
           return ret.length > 0;
         `),
         ),
       );
-
+      serBody.push(
+        functionGenerator(
+          'hasAccessData',
+          `${UserParamService}`,
+          `Access${this.parent.namePascal}Dto`,
+          `
+          return {
+            userId:user.id
+          };
+        `,
+        ),
+      );
+    }
+    serBody.push(
+      functionGenerator(
+        'isNotDeletedData',
+        ``,
+        `Deleted${this.parent.namePascal}Dto`,
+        `
+        return {
+          deletedAt:null
+        };
+      `,
+      ),
+    );
+    serBody.push(
+      functionGenerator(
+        'pseudonymisationData',
+        ``,
+        `Pseudonymisation${this.parent.namePascal}Dto`,
+        `
+        return {
+        };
+      `,
+      ),
+    );
     this.parent.idsNoDefault.map((id) => {
       serBody.push(
         functionGenerator(
@@ -55,11 +90,9 @@ export default class CRUD {
         ),
       );
     });
-    // console.log(serBody);
     const keys = Object.keys(fixedConfig.functions);
     keys.map((f, i) => {
       const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
-      // console.log(f, i);
       if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
         if (i == 11) {
           conBody.push('\n\n//\t------------------ ADMIN -------------------\n');
@@ -319,6 +352,8 @@ export default class CRUD {
   private serviceFunctionBody(conf: functionFixConfig, name: ReqNames) {
     let res: string[] = [];
     const service = this.config.access && !this.config.accessBlackList.includes(this.parent.namePascal) ? conf.serviceAccess : conf.service;
+    // console.log(this.parent.namePascal, service);
+
     let fix = service;
     if (this.parent.idsNoDefault.length > 0) {
       if (fix.includes('createMany') && conf.bodyArray) {
@@ -387,6 +422,9 @@ export default class CRUD {
         Create${this.parent.namePascal}AdminDto,
         Update${this.parent.namePascal}AdminDto,
         Connect${this.parent.namePascal}AdminDto,
+        Access${this.parent.namePascal}Dto,
+        Deleted${this.parent.namePascal}Dto,
+        Pseudonymisation${this.parent.namePascal}Dto
     } from './${this.parent.nameCamel}.dto';`,
     );
     res.push(
@@ -460,6 +498,9 @@ export default class CRUD {
         Create${this.parent.namePascal}AdminDto,
         Update${this.parent.namePascal}AdminDto,
         Connect${this.parent.namePascal}AdminDto,
+        Access${this.parent.namePascal}Dto,
+        Deleted${this.parent.namePascal}Dto,
+        Pseudonymisation${this.parent.namePascal}Dto
     } from './${this.parent.nameCamel}.dto';`,
     );
     res.push(

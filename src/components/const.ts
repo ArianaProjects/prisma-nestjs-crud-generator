@@ -13,12 +13,12 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'Exist ENTITY with filter as Query',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
-        where: { ...query, userId: user.id, deletedAt: null },
+        where: { ...query, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
       return ret.length > 0;`,
       service: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany({
-        where: { ...query, deletedAt: null },
+        where: { ...query, ...this.isNotDeletedData() }
       });
       return ret.length > 0;`,
       responses: [
@@ -36,12 +36,12 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'Find many ENTITY with filter as Query',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
-        where: { ...query, userId: user.id, deletedAt: null },
+        where: { ...query, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
       return ret;`,
       service: `    
       const ret = await this.prismaService.NAME_CAMEL.findMany({
-        where: { ...query, deletedAt: null },
+        where: { ...query, ...this.isNotDeletedData() }
       });
       return ret;`,
       responses: [
@@ -59,16 +59,16 @@ export const fixedConfig: fixedConfigInterface = {
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: {
-          userId: user.id,
-          deletedAt: null,
+          ...this.hasAccessData(user),
+          ...this.isNotDeletedData()
         },
       });
       return ret;`,
       service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findMany(
+      const ret = await this.prismaService.NAME_CAMEL.findMany({
         where: {
-          deletedAt: null,
-        },
+          ...this.isNotDeletedData()
+        },}
       );
       return ret;`,
       responses: [
@@ -86,12 +86,12 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'find unique ENTITY ',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.findMany({
-        where: { ...param, userId: user.id, deletedAt: null },
+        where: { ...param, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
       return ret[0];`,
       service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findUnique({
-        where: { ...param , deletedAt: null},
+      const ret = await this.prismaService.NAME_CAMEL.findMany({
+        where: { ...param , ...this.isNotDeletedData()}
       });
       return ret;`,
       responses: [
@@ -109,7 +109,7 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'create ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.create({
-        data: { ...body, userId: user.id },
+        data: { ...body,userId:user.id },
       });
       return ret;`,
       service: `
@@ -135,7 +135,7 @@ export const fixedConfig: fixedConfigInterface = {
       const ret = await this.prismaService.NAME_CAMEL.createMany({
         data: [
           ...body.map((b) => {
-            return { ...b, userId: user.id };
+            return { ...b, userId:user.id };
           }),
         ],
       });
@@ -165,17 +165,17 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `Number`,
       info: 'update many ENTITY',
       serviceAccess: `
-      param.map((p) => {
-        if (!this.hasAccess(user, p)) {
-          throw new UnauthorizedException();
-        }
-      });
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
-          OR: [
-            ...param.map((p) => {
-              return { ...p };
-            }),
+          AND: [
+            {  ...this.hasAccessData(user),...this.isNotDeletedData() },
+            {
+              OR: [
+                ...param.map((p) => {
+                  return { ...p };
+                }),
+              ],
+            },
           ],
         },
         data: { ...body },
@@ -184,10 +184,15 @@ export const fixedConfig: fixedConfigInterface = {
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
-          OR: [
-            ...param.map((p) => {
-              return { ...p };
-            }),
+          AND: [
+            {  ...this.isNotDeletedData() },
+            {
+              OR: [
+                ...param.map((p) => {
+                  return { ...p };
+                }),
+              ],
+            },
           ],
         },
         data: { ...body },
@@ -218,14 +223,14 @@ export const fixedConfig: fixedConfigInterface = {
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
-          userId: user.id,
+          ...this.hasAccessData(user), ...this.isNotDeletedData() 
         },
         data: { ...body },
       });
       return ret.count;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
-        data: { ...body },
+        data: { ...body,...this.isNotDeletedData()  },
       });
       return ret.count;`,
       responses: [
@@ -252,17 +257,14 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `ENTITY`,
       info: 'update unique ENTITY',
       serviceAccess: `
-      if (!this.hasAccess(user, param)) {
-        throw new UnauthorizedException();
-      }
       const ret = await this.prismaService.NAME_CAMEL.update({
-        where: { ...param },
+        where: { ...param,...this.hasAccessData(user), ...this.isNotDeletedData()  },
         data: { ...body },
       });
       return ret;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.update({
-        where: { ...param },
+        where: { ...param,...this.isNotDeletedData()  },
         data: { ...body },
       });
       return ret;`,
@@ -289,32 +291,37 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `Number`,
       info: 'Delete many ENTITY',
       serviceAccess: `
-      param.map((p) => {
-        if (!this.hasAccess(user, p)) {
-          throw new UnauthorizedException();
-        }
-      });
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
-          OR: [
-            ...param.map((p) => {
-              return { ...p };
-            }),
+          AND: [
+            { ...this.hasAccessData(user),...this.isNotDeletedData() },
+            {
+              OR: [
+                ...param.map((p) => {
+                  return { ...p };
+                }),
+              ],
+            },
           ],
         },
-        data: { deletedAt: new Date() },
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
       return ret.count;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: {
-          OR: [
-            ...param.map((p) => {
-              return { ...p };
-            }),
+          AND: [
+            { ...this.isNotDeletedData() },
+            {
+              OR: [
+                ...param.map((p) => {
+                  return { ...p };
+                }),
+              ],
+            },
           ],
         },
-        data: { deletedAt: new Date() },
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
       return ret.count;`,
       responses: [
@@ -339,13 +346,14 @@ export const fixedConfig: fixedConfigInterface = {
       info: 'delete all ENTITY',
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
-        where: { userId: user.id },
-        data: { deletedAt: new Date() },
+        where: { ...this.hasAccessData(user), ...this.isNotDeletedData() },
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
       return ret.count;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
-        data: { deletedAt: new Date() },
+        where: {...this.isNotDeletedData() },
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
       return ret.count;`,
       responses: [
@@ -368,28 +376,28 @@ export const fixedConfig: fixedConfigInterface = {
     deleteOne: {
       param: 'CONNECT_DTO',
       fixedPath: '',
-      resp: `ENTITY`,
+      resp: `Number`,
       info: 'delete one ENTITY',
       serviceAccess: `
       if (!this.hasAccess(user, param)) {
         throw new UnauthorizedException();
       }
-      const ret = await this.prismaService.NAME_CAMEL.update({
-        where: { ...param },
-        data: { deletedAt: new Date() },
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
+        where: { ...param ,...this.hasAccessData(user), ...this.isNotDeletedData()},
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
       return ret;`,
       service: `
-            const ret = await this.prismaService.NAME_CAMEL.update({
-        where: { ...param },
-        data: { deletedAt: new Date() },
+            const ret = await this.prismaService.NAME_CAMEL.updateMany({
+        where: { ...param , ...this.isNotDeletedData()},
+        data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
-      return ret;`,
+      return ret.count;`,
       responses: [
         {
           description: 'UPDATE_DTO',
           status: 202,
-          type: 'ENTITY',
+          type: 'Number',
         },
         {
           status: 406,
@@ -747,14 +755,14 @@ export const fixedConfig: fixedConfigInterface = {
       serviceAccess: `
       const ret = await this.prismaService.NAME_CAMEL.delete({
         where: {
-          id: param['id'],
+                  ...param,
         },
       });
       return ret;`,
       service: `
       const ret = await this.prismaService.NAME_CAMEL.delete({
         where: {
-          id: param['id'],
+                  ...param,
         },
       });
       return ret;`,

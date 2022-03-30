@@ -35,4 +35,23 @@ model OrderStatus {
   status      OrderStatusType
   description String?
 
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.VarChar(255)
+}
+
+model User {
+  id        String    @id @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  email           String    @unique @db.VarChar(255)
+  firstName       String    @db.VarChar(255)
+  lastName        String    @db.VarChar(255)
+  age             DateTime? @default(now()) @db.Date
+  mainAddressId   Int?
+  insurance       Boolean?
+  smsNotification Boolean?  @default(true)
+
+  OrderStatus OrderStatus[]
 }

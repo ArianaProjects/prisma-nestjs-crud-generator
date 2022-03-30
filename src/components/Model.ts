@@ -22,6 +22,7 @@ export default class Model extends FileGenerator {
   updateFieldsAdmin: DMMF.Field[];
   findFieldsAdmin: DMMF.Field[];
   connectFieldsAdmin: DMMF.Field[];
+  deletedField: DMMF.Field[];
   uniqFields: DMMF.Field[];
   returnFields: DMMF.Field[];
   entityFields: DMMF.Field[];
@@ -58,6 +59,7 @@ export default class Model extends FileGenerator {
     this.updateFieldsAdmin = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.findFieldsAdmin = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.connectFieldsAdmin = this.model.fields.filter((x) => x.isId || x.isUnique);
+    this.deletedField = this.model.fields.filter((x) => x.name == 'deletedAt');
 
     this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
@@ -91,6 +93,7 @@ export default class Model extends FileGenerator {
   }
 
   public postGenerate() {
+    console.log(this.fullPath + 'writeTSFile');
     writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.dto.ts`, this.types.dto, false);
     writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.entity.ts`, this.types.entity, false);
     writeTSFile(this.fullPath + `/${this.toCamelCase(this.model.name)}/${this.toCamelCase(this.model.name)}.controller.ts`, this.crud.controller, false);

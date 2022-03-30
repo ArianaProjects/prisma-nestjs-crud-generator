@@ -1,7 +1,9 @@
 {
     "access": true,
     "accessBlackList": [
-        "User"
+        "User",
+        "Employee",
+        "Tax"
     ],
     "functions": {
         "exist": {
