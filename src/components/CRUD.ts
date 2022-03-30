@@ -37,7 +37,8 @@ export default class CRUD {
           'Boolean',
           this.parent.replace(`
           const ret = await this.prismaService.NAME_CAMEL.findMany({
-            where: { ...query, userId: user.id, deletedAt: null },
+            where: { ...query,  ...this.hasAccessData(user),
+              ...this.isNotDeletedData(), },
           });
           return ret.length > 0;
         `),
