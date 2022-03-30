@@ -31,7 +31,7 @@ export default class Types {
     res.push(this.classGenerator(`Find${this.parent.namePascal}Dto`, this.parent.findFields, true, false, true, true));
     res.push(this.classGenerator(`Connect${this.parent.namePascal}Dto`, this.parent.connectFields, true, false, true, false));
 
-    res.push(this.classGenerator(`Access${this.parent.namePascal}Dto`, this.parent.connectFields, false, false, false, false));
+    res.push(this.classGenerator(`Access${this.parent.namePascal}Dto`, this.parent.accessField, false, false, false, false));
     res.push(this.classGenerator(`Deleted${this.parent.namePascal}Dto`, this.parent.deletedField, false, false, false, false));
     res.push(this.classGenerator(`Pseudonymisation${this.parent.namePascal}Dto`, this.parent.updateFieldsAdmin, false, false, false, true));
 

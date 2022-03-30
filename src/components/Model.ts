@@ -23,6 +23,7 @@ export default class Model extends FileGenerator {
   findFieldsAdmin: DMMF.Field[];
   connectFieldsAdmin: DMMF.Field[];
   deletedField: DMMF.Field[];
+  accessField: DMMF.Field[];
   uniqFields: DMMF.Field[];
   returnFields: DMMF.Field[];
   entityFields: DMMF.Field[];
@@ -33,6 +34,7 @@ export default class Model extends FileGenerator {
 
   blackList: string[] = ['deletedAt', 'updatedAt', 'createdAt'];
   excludeList: string[] = ['deletedAt'];
+  userList: string[] = ['userId', 'employeeId'];
 
   nameCamel: string;
   namePascal: string;
@@ -60,6 +62,7 @@ export default class Model extends FileGenerator {
     this.findFieldsAdmin = this.model.fields.filter((x) => (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.connectFieldsAdmin = this.model.fields.filter((x) => x.isId || x.isUnique);
     this.deletedField = this.model.fields.filter((x) => x.name == 'deletedAt');
+    this.accessField = this.model.fields.filter((x) => this.isInUserList(x.name));
 
     this.createFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
     this.updateFields = this.model.fields.filter((x) => !x.isId && (x.kind == 'scalar' || x.kind == 'enum' || x.kind == 'unsupported') && !this.isInBlackList(x.name));
@@ -106,6 +109,9 @@ export default class Model extends FileGenerator {
   }
   public isExcludeList(name: string) {
     return this.excludeList.includes(name);
+  }
+  public isInUserList(name: string) {
+    return this.userList.includes(name);
   }
 
   public replace(s: any) {

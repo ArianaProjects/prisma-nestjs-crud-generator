@@ -379,14 +379,11 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `Number`,
       info: 'delete one ENTITY',
       serviceAccess: `
-      if (!this.hasAccess(user, param)) {
-        throw new UnauthorizedException();
-      }
       const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param ,...this.hasAccessData(user), ...this.isNotDeletedData()},
         data: { ...this.pseudonymisationData(),deletedAt: new Date() },
       });
-      return ret;`,
+      return ret.count;`,
       service: `
             const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param , ...this.isNotDeletedData()},
