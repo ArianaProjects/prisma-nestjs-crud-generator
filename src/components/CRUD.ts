@@ -318,7 +318,7 @@ export default class CRUD {
 
   private serviceFunctionBody(conf: functionFixConfig, name: ReqNames) {
     let res: string[] = [];
-    const service = this.config.access && !this.config.accessBlackList.includes(name) ? conf.serviceAccess : conf.service;
+    const service = this.config.access && !this.config.accessBlackList.includes(this.parent.namePascal) ? conf.serviceAccess : conf.service;
     let fix = service;
     if (this.parent.idsNoDefault.length > 0) {
       if (fix.includes('createMany') && conf.bodyArray) {
