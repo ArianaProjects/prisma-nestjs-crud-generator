@@ -12,12 +12,12 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `Boolean`,
       info: 'Exist ENTITY with filter as Query',
       serviceAccess: `
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
       return ret.length > 0;`,
       service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query, ...this.isNotDeletedData() }
       });
       return ret.length > 0;`,
@@ -85,15 +85,15 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `ENTITY`,
       info: 'find unique ENTITY ',
       serviceAccess: `
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...param, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
-      return ret[0];`,
+      return ret;`,
       service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...param , ...this.isNotDeletedData()}
       });
-      return ret[0];`,
+      return ret;`,
       responses: [
         {
           description: 'NAME_CAMEL',
@@ -413,12 +413,12 @@ export const fixedConfig: fixedConfigInterface = {
       resp: `Boolean`,
       info: 'ADMIN - Exist ENTITY with filter as Query',
       serviceAccess: `    
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query },
       });
       return ret.length > 0;`,
       service: `    
-      const ret = await this.prismaService.NAME_CAMEL.findMany({
+      const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query },
       });
       return ret.length > 0;`,

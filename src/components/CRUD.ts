@@ -339,7 +339,6 @@ export default class CRUD {
     if (apiOperator) res.push(this.apiOperationDecorator(name, conf));
     if (apiResp) res.push(this.allApiResponseDecorators(conf));
     if (apiReq) res.push(this.apiRequestDecorator(conf));
-    if (optionalConf && optionalConf.additionalDecorator) optionalConf.additionalDecorator.map((a) => res.push(a));
     res.push(functionPromiseGenerator(ReqNames[name], this.paramController(conf, this.config.access), this.parent.replace(conf.resp), this.parent.replace(this.controllerFunctionBody(name, conf))));
     return res.join('\n');
   }
