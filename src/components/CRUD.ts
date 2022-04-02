@@ -95,7 +95,7 @@ export default class CRUD {
     keys.map((f, i) => {
       const d = this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable;
       if (!(this.config && this.config.functions && this.config.functions[f] && this.config.functions[f].disable)) {
-        if (i == 11) {
+        if (i == 12) {
           conBody.push('\n\n//\t------------------ ADMIN -------------------\n');
           serBody.push('\n\n//\t------------------ ADMIN -------------------\n');
         }

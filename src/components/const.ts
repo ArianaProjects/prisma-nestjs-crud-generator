@@ -15,12 +15,12 @@ export const fixedConfig: fixedConfigInterface = {
       const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query, ...this.hasAccessData(user), ...this.isNotDeletedData() }
       });
-      return ret.length > 0;`,
+      return !!ret;`,
       service: `    
       const ret = await this.prismaService.NAME_CAMEL.findFirst({
         where: { ...query, ...this.isNotDeletedData() }
       });
-      return ret.length > 0;`,
+      return !!ret;`,
       responses: [
         {
           description: 'NAME_PASCAL',
@@ -254,25 +254,25 @@ export const fixedConfig: fixedConfigInterface = {
       body: 'UPDATE_DTO',
       param: 'CONNECT_DTO',
       fixedPath: '',
-      resp: `ENTITY`,
+      resp: `Number`,
       info: 'update unique ENTITY',
       serviceAccess: `
-      const ret = await this.prismaService.NAME_CAMEL.update({
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param,...this.hasAccessData(user), ...this.isNotDeletedData()  },
         data: { ...body },
       });
-      return ret;`,
+      return ret.count;`,
       service: `
-      const ret = await this.prismaService.NAME_CAMEL.update({
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param,...this.isNotDeletedData()  },
         data: { ...body },
       });
-      return ret;`,
+      return ret.count;`,
       responses: [
         {
           description: 'UPDATE_DTO',
           status: 202,
-          type: 'ENTITY',
+          type: 'Number',
         },
         {
           status: 406,
@@ -640,25 +640,25 @@ export const fixedConfig: fixedConfigInterface = {
       param: 'CONNECT_ADMIN_DTO',
       body: 'UPDATE_ADMIN_DTO',
       fixedPath: 'admin',
-      resp: `ENTITY`,
+      resp: `Number`,
       info: 'ADMIN - update unique ENTITY',
       serviceAccess: `
-      const ret = await this.prismaService.NAME_CAMEL.update({
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param },
         data: { ...body },
       });
-      return ret;`,
+      return ret.count;`,
       service: `
-      const ret = await this.prismaService.NAME_CAMEL.update({
+      const ret = await this.prismaService.NAME_CAMEL.updateMany({
         where: { ...param },
         data: { ...body },
       });
-      return ret;`,
+      return ret.count;`,
       responses: [
         {
           description: 'UPDATE_DTO',
           status: 202,
-          type: 'ENTITY',
+          type: 'Number',
         },
         {
           status: 406,
