@@ -1,12 +1,59 @@
 {
-    "access": true,
-    "accessBlackList": [
-        "User",
-        "Employee",
-        "Tax"
-    ],
+    "access": false,
+    "accessBlackList": [],
     "functions": {
         "exist": {
+            "disable": true
+        },
+        "getAll": {
+            "disable": true
+        },
+        "createMany": {
+            "disable": true
+        },
+        "updateMany": {
+            "disable": true
+        },
+        "updateAll": {
+            "disable": true
+        },
+        "deleteMany": {
+            "disable": true
+        },
+        "deleteAll": {
+            "disable": true
+        },
+        "existAdmin": {
+            "disable": true
+        },
+        "findUniqAdmin": {
+            "disable": true
+        },
+        "findAdminMany": {
+            "disable": true
+        },
+        "getAllAdmin": {
+            "disable": true
+        },
+        "createAdminOne": {
+            "disable": true
+        },
+        "createAdminMany": {
+            "disable": true
+        },
+        "updateAdminOne": {
+            "disable": true
+        },
+        "updateAdminMany": {
+            "disable": true
+        },
+        "updateAdminAll": {
+            "disable": true
+        },
+        "deleteAdminMany": {
+            "disable": true
+        },
+        "deleteAdminAll": {
             "disable": true
         }
     }

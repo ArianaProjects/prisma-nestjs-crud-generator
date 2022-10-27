@@ -6,7 +6,6 @@ generator custom_generator {
 
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -14,44 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum OrderStatusType {
-  PAYMENT
-  ORDERED
-  ACCEPTED
-  PROCESSING
-  READY_TO_SHIP
-  SHIPPED
-  DELIVERED
-  RETURNED
-  CANCELED
-}
-
-model OrderStatus {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  status      OrderStatusType
-  description String?
-
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.VarChar(255)
-}
-
-model User {
-  id        String    @id @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  email           String    @unique @db.VarChar(255)
-  firstName       String    @db.VarChar(255)
-  lastName        String    @db.VarChar(255)
-  age             DateTime? @default(now()) @db.Date
-  mainAddressId   Int?
-  insurance       Boolean?
-  smsNotification Boolean?  @default(true)
-
-  OrderStatus OrderStatus[]
+model UpdateVideoYoutube {
+  id        Int      @id @default(autoincrement())
+  created   Int
+  updated   Int
+  createdAt DateTime @default(now())
 }

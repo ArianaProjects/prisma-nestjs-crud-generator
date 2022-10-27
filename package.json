@@ -33,7 +33,7 @@
 		"email": "shayandavarifard@yahoo.com"
 	},
 	"dependencies": {
-		"@prisma/client": "^3.8.1",
+		"@prisma/client": "4.3.1",
 		"@prisma/generator-helper": "^3.8.1",
 		"@prisma/sdk": "^3.8.1",
 		"change-case": "^4.1.2",
@@ -46,7 +46,7 @@
 		"@types/node": "^16.6.2",
 		"@types/prettier": "2.4.3",
 		"jest": "^27.4.7",
-		"prisma": "^3.8.1",
+		"prisma": "4.3.1",
 		"release-it": "^14.12.4",
 		"swagger-ui-express": "^4.1.6",
 		"ts-node": "^10.2.1",
